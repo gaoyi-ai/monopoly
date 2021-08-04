@@ -16,6 +16,9 @@
             <form id="form-container" class="center" method="POST">
                 {% csrf_token %}
                 <span id="login-title">{{ active_page }} to Monopoly</span>
+                {% if error %}
+                    <span id="login-error" class="card"> {{ error }} </span>
+                {% endif %}
                 <input name="username" id="login-user-name" placeholder="User Name"/>
                 <input name="password" type="password" id="login-password" placeholder="Password"/>
                 <button type="submit" id="login-submit" class="large-button">{{ active_page }}</button>
