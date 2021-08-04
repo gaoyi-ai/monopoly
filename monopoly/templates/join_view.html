@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Monopoly {% endblock %}
+
+{% block files %}
+    <link rel="stylesheet" href="{% static 'css/join.css' %}">
+    <script src="{% static 'js/views/join.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div id="join-card-container" class="card">
+        <input id="user-name" value="{{ user.name | default_if_none:'player'  }}" hidden>
+        <input id="host-name" value="{{ host_name | default_if_none:'default' }}" hidden>
+        <div class="card-blur-container">
+            <div class="card-blur"></div>
+        </div>
+        <div class="card-content-container">
+            <a href="{% url 'profile' user.name %}" target="_blank">
+                <img id="user-avatar" src="{{ avatar.url }}">
+            </a>
+            <span id="new-game-notice">New Game!</span>
+            <div id="joined-users-container">
+                <a href="{% url 'profile' user.name %}" target="_blank">
+                    <img class="joined-user-avatar"
+                         src="{{ avatar.url  | default_if_none:'/static/img/default_avatar.png' }}"
+                         title="{{ user.name }}">
+                </a>
+            </div>
+            <button id="start-game" class="large-button" disabled>
+                Waiting for friends to join...
+            </button>
+            <a href="{% url 'profile' user.name %}" target="_blank">
+                <button id="init-profile" class="large-button hidden">
+                    Let your friends recognize you with a profile photo!
+                </button>
+            </a>
+            {% if host_name == user.name %}
+                <hr>
+                <span id="invitation-note">Invite your friends to join the game by sharing the link.</span>
+                <div id="invitation-container">
+                    <input id="invitation-url" readonly value="" placeholder="Generating shared link...">
+                    <div class="tooltip">
+                        <button id="share-invitation" class="large-button">
+                            <span id="copied-tooltip" class="tooltiptext">Copied! &#x1F44C;</span>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

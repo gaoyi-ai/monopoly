@@ -9,6 +9,31 @@ from .forms import ProfileForm
 from .models import Profile
 
 
+class GameView(View):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'game_view.html', {
+            "username": request.user.username,
+            "hostname": kwargs.get("host_name")
+        })
+
+
+class JoinView(View):
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        host_name = kwargs.get('host_name', user.username)
+        profile = Profile.objects.get(user=user)
+
+        return render(request, 'join_view.html', {
+            "user": {
+                "name": user.username,
+                "avatar": profile.avatar
+            },
+            "host_name": host_name if len(host_name) else user.username
+        })
+
+
 class LoginView(View):
     initial = {'active_page': 'register'}
     template_name = 'login_view.html'
