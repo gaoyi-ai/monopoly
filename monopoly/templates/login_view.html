@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Monopoly {% endblock %}
+
+{% block files %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div id="login-container" class="card">
+        <div class="card-blur-container">
+            <div class="card-blur"></div>
+        </div>
+        <div class="card-content-container">
+            <form id="form-container" class="center" method="POST">
+                {% csrf_token %}
+                <span id="login-title">{{ active_page }} to Monopoly</span>
+                <input name="username" id="login-user-name" placeholder="User Name"/>
+                <input name="password" type="password" id="login-password" placeholder="Password"/>
+                <button type="submit" id="login-submit" class="large-button">{{ active_page }}</button>
+            </form>
+            <span id="login-switch" class="card">
+            {% if active_page == "register" %}
+                Already Signed Up? &nbsp;
+                <a href="{% url 'login' %}">Login to Existing Account</a>
+            {% else %}
+                New Here? &nbsp;
+                <a href="{% url 'register' %}">Create New Account</a>
+            {% endif %}
+        </span>
+        </div>
+    </div>
+{% endblock %}
