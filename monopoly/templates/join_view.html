@@ -11,8 +11,8 @@
 {% block content %}
 
     <div id="join-card-container" class="card">
-        <input id="user-name" value="{{ user.name | default_if_none:'player'  }}" hidden>
-        <input id="host-name" value="{{ host_name | default_if_none:'default' }}" hidden>
+        <input id="user-name" value="{{ user.name }}" hidden>
+        <input id="host-name" value="{{ host_name }}" hidden>
         <div class="card-blur-container">
             <div class="card-blur"></div>
         </div>
@@ -24,7 +24,7 @@
             <div id="joined-users-container">
                 <a href="{% url 'profile' user.name %}" target="_blank">
                     <img class="joined-user-avatar"
-                         src="{{ avatar.url  | default_if_none:'/static/img/default_avatar.png' }}"
+                         src="{{ avatar.url }}"
                          title="{{ user.name }}">
                 </a>
             </div>

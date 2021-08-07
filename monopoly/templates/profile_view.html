@@ -22,8 +22,9 @@
                     </svg>
                     <span>Upload</span>
                 </div>
-                <img id="profile-user-avatar" src="{{ avatar.image_url|default_if_none:'/static/img/default_avatar.png' }}">
+                <img id="profile-user-avatar" src="{{ avatar.url }}">
                 <div id="profile-meta">
+
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="file" id="profile-avatar-file" name="avatar">
