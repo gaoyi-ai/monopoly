@@ -14,15 +14,5 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.user)
 
-    @property
-    def image_url(self):
-        """
-        Return self.photo.url if self.photo is not None,
-        'url' exist and has a value, else, return None.
-        """
-        if self.avatar:
-            return getattr(self.avatar, 'url', None)
-        return None
-
     class Meta:
         app_label = "monopoly"
