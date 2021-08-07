@@ -64,7 +64,7 @@ class LoginView(View):
 
 
 class RegisterView(View):
-    initial = {'active_page': 'register', 'form': ProfileForm()}
+    initial = {'active_page': 'register'}
     template_name = 'login_view.html'
 
     def get(self, request, *args, **kwargs):
