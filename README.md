@@ -1,7 +1,3 @@
----
-date: 8/5/2021
----
-
 # monopoly
 
 159356 SE Capstone Project
