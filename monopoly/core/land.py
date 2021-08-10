@@ -12,9 +12,6 @@ class Land:
         self._description = description
         self._content = content
 
-    def set_content(self, content_land):
-        self._content = content_land
-
     def get_type(self):
         return self._content.get_type()
 
