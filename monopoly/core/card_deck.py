@@ -8,6 +8,7 @@ class CardDeck:
     def __init__(self):
         self._index = 0
         self._cards = []
+        self._init_cards()
 
     def _init_cards(self):
         self._cards.append(Card("Get One More Grace day ", 100, 0))

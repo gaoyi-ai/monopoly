@@ -1,4 +1,4 @@
-from monopoly.core.util import *
+INIT_PLAYER_MONEY = 1500
 
 
 class Player:

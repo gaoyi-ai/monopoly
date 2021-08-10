@@ -1,6 +1,3 @@
-INIT_PLAYER_MONEY = 1500
-
-
 class MonopolyHandler:
     def on_error(self, err_msg):
         pass
