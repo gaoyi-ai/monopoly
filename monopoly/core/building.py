@@ -1,5 +1,3 @@
-# Building class
-
 RATIO_RENT_TO_PRICE_FOR_HOUSE = 4
 RATIO_RENT_TO_PRICE_FOR_HOTEL = 2
 
@@ -15,31 +13,15 @@ class BuildingType:
     NOTHING = 2
 
 
-# immutable
 class Building:
 
     def __init__(self, id, land_index, building_type, price, description, owner):
         self.id = id
         self.land_index = land_index
-        self.building_type = building_type
+        self.type = building_type
         self.price = price
         self.description = description
         self.owner = owner
-
-    def get_description(self):
-        return self.description
-
-    def get_land_index(self):
-        return self.land_index
-
-    def get_building_type(self):
-        return self.building_type
-
-    def get_price(self):
-        return self.price
-
-    def get_id(self):
-        return self.id
 
     def __hash__(self):
         return hash(self.id)
@@ -49,11 +31,3 @@ class Building:
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-
-def test_answer():
-    pass
-
-
-if __name__ == '__main__':
-    test_answer()
