@@ -5,64 +5,53 @@ from monopoly.core.land import *
 class Board:
 
     def __init__(self):
-        self._lands = []
-        self.generate_lands()
+        self.lands = []
+        self._generate_lands()
 
-    def get_lands(self):
-        return self._lands
+    def land_at(self, index: int) -> Land:
+        return self.lands[index]
 
-    def get_land(self, index):
-        return self._lands[index]
+    def _generate_lands(self):
+        self.lands.append(Land(0, "Start", Start(START_REWARD)))
+        self.lands.append(Land(1, "Warner Hall", Constructable(60)))
+        self.lands.append(Land(2, "Chance", Chance()))
+        self.lands.append(Land(3, "UC", Constructable(60)))
+        self.lands.append(Land(4, "Union Grill", Infrastructure(150)))
+        self.lands.append(Land(5, "AB route", Infrastructure(200)))
+        self.lands.append(Land(6, "College of Fine Art", Constructable(100)))
+        self.lands.append(Land(7, "Chance", Chance()))
+        self.lands.append(Land(8, "Posner Hall", Constructable(100)))
+        self.lands.append(Land(9, "Hunt Library", Constructable(120)))
+        self.lands.append(Land(10, "AIV Jail", Jail(1)))
+        self.lands.append(Land(11, "Doherty Hall", Constructable(140)))
+        self.lands.append(Land(12, "Entropy+", Infrastructure(150)))
+        self.lands.append(Land(13, "Gasling Stadium", Constructable(140)))
+        self.lands.append(Land(14, "Margaret Morrison Carnegie Hall", Constructable(160)))
+        self.lands.append(Land(15, "Escort", Infrastructure(200)))
+        self.lands.append(Land(16, "Hamerschlag Hall", Constructable(180)))
+        self.lands.append(Land(17, "Chance", Chance()))
+        self.lands.append(Land(18, "Roberts Engineering Hall", Constructable(180)))
+        self.lands.append(Land(19, "Porter Hall", Constructable(200)))
+        self.lands.append(Land(20, "Parking", Parking()))
+        self.lands.append(Land(21, "Gates Center", Constructable(220)))
+        self.lands.append(Land(22, "Chance", Chance()))
+        self.lands.append(Land(23, "Newell-Simon Hall", Constructable(220)))
+        self.lands.append(Land(24, "Wean Hall", Constructable(240)))
+        self.lands.append(Land(25, "PTC", Infrastructure(200)))
+        self.lands.append(Land(26, "Baker Hall", Constructable(260)))
+        self.lands.append(Land(27, "Fence", Constructable(260)))
+        self.lands.append(Land(28, "iNoodle", Infrastructure(150)))
+        self.lands.append(Land(29, "Purnell Center", Constructable(280)))
+        self.lands.append(Land(30, "AIV Jail", Jail(1)))
+        self.lands.append(Land(31, "Hamburg Hall", Constructable(300)))
+        self.lands.append(Land(32, "Collaborative Innovation Center", Constructable(300)))
+        self.lands.append(Land(33, "Chance", Chance()))
+        self.lands.append(Land(34, "Cyert Hall", Constructable(320)))
+        self.lands.append(Land(35, "Monorail", Infrastructure(200)))
+        self.lands.append(Land(36, "Chance", Chance()))
+        self.lands.append(Land(37, "Information Networking Institute", Constructable(350)))
+        self.lands.append(Land(38, "Pasta Vilaggio", Infrastructure(150)))
+        self.lands.append(Land(39, "Mellon Institute", Constructable(400)))
 
-    def generate_lands(self):
-        self._lands.append(Land(0, "Start", StartLand(START_REWARD)))
-        self._lands.append(Land(1, "Warner Hall", ConstructionLand(60)))
-        self._lands.append(Land(2, "Chance", ChanceLand()))
-        self._lands.append(Land(3, "UC", ConstructionLand(60)))
-        self._lands.append(Land(4, "Union Grill", Infra(150)))
-        self._lands.append(Land(5, "AB route", Infra(200)))
-        self._lands.append(Land(6, "College of Fine Art", ConstructionLand(100)))
-        self._lands.append(Land(7, "Chance", ChanceLand()))
-        self._lands.append(Land(8, "Posner Hall", ConstructionLand(100)))
-        self._lands.append(Land(9, "Hunt Library", ConstructionLand(120)))
-        self._lands.append(Land(10, "AIV Jail", JailLand(1)))
-        self._lands.append(Land(11, "Doherty Hall", ConstructionLand(140)))
-        self._lands.append(Land(12, "Entropy+", Infra(150)))
-        self._lands.append(Land(13, "Gasling Stadium", ConstructionLand(140)))
-        self._lands.append(Land(14, "Margaret Morrison Carnegie Hall", ConstructionLand(160)))
-        self._lands.append(Land(15, "Escort", Infra(200)))
-        self._lands.append(Land(16, "Hamerschlag Hall", ConstructionLand(180)))
-        self._lands.append(Land(17, "Chance", ChanceLand()))
-        self._lands.append(Land(18, "Roberts Engineering Hall", ConstructionLand(180)))
-        self._lands.append(Land(19, "Porter Hall", ConstructionLand(200)))
-        self._lands.append(Land(20, "Parking", ParkingLand()))
-        self._lands.append(Land(21, "Gates Center", ConstructionLand(220)))
-        self._lands.append(Land(22, "Chance", ChanceLand()))
-        self._lands.append(Land(23, "Newell-Simon Hall", ConstructionLand(220)))
-        self._lands.append(Land(24, "Wean Hall", ConstructionLand(240)))
-        self._lands.append(Land(25, "PTC", Infra(200)))
-        self._lands.append(Land(26, "Baker Hall", ConstructionLand(260)))
-        self._lands.append(Land(27, "Fence", ConstructionLand(260)))
-        self._lands.append(Land(28, "iNoodle", Infra(150)))
-        self._lands.append(Land(29, "Purnell Center", ConstructionLand(280)))
-        self._lands.append(Land(30, "AIV Jail", JailLand(1)))
-        self._lands.append(Land(31, "Hamburg Hall", ConstructionLand(300)))
-        self._lands.append(Land(32, "Collaborative Innovation Center", ConstructionLand(300)))
-        self._lands.append(Land(33, "Chance", ChanceLand()))
-        self._lands.append(Land(34, "Cyert Hall", ConstructionLand(320)))
-        self._lands.append(Land(35, "Monorail", Infra(200)))
-        self._lands.append(Land(36, "Chance", ChanceLand()))
-        self._lands.append(Land(37, "Information Networking Institute", ConstructionLand(350)))
-        self._lands.append(Land(38, "Pasta Vilaggio", Infra(150)))
-        self._lands.append(Land(39, "Mellon Institute", ConstructionLand(400)))
-
-    def get_grid_num(self):
-        return len(self._lands)
-
-
-def test():
-    pass
-
-
-if __name__ == "__main__":
-    test()
+    def __len__(self):
+        return len(self.lands)

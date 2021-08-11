@@ -17,7 +17,7 @@ class MonopolyHandler:
     def on_decision_made(self):
         pass
 
-    def on_result_applied(self):
+    def on_receipt_applied(self):
         pass
 
     def on_pass_start(self):
@@ -30,35 +30,27 @@ class InternalLogHandler(MonopolyHandler):
         self.game = g
 
     def on_error(self, err_msg):
-        print('[Error] [Game ID: {0}]'.format(self.game.get_game_id()) + err_msg)
+        print(f'[Error] [Game ID: {self.game.game_id}] [Msg: {err_msg}]')
 
     def on_rolled(self):
-        print('[Info] [Game ID: {0}]current player {1} is rolling'.format(
-            self.game.get_game_id(), self.game.get_current_player().get_index()))
+        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: current player {self.game.cur_player.index} is rolling]')
 
     def on_decision_made(self):
-        print('[Info] [Game ID: {0} ]Decision is made'.format(
-            self.game.get_game_id()))
+        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Decision is made]')
 
     def on_new_game(self):
-        print('[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
-              "Game Started")
+        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Game Started]')
 
     def on_game_ended(self):
-        print('[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
-              "Game Ended")
-        print('[Info] The player {0} has go bankruptcy'.format(
-            self.game.get_current_player().get_index()))
+        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Game Ended]')
+        print(f'[Info] [Msg: The player {self.game.cur_player.index} has go bankruptcy]')
 
     def on_player_changed(self):
-        print('[Info] [Game Id: {0}] '.format(self.game.get_game_id()) + \
-              "Player changed to : {0}".format(
-                  self.game.get_current_player().get_index()))
+        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Player changed to : {self.game.cur_player.index}]')
 
-    def on_result_applied(self):
-        pass
+    def on_receipt_applied(self):
+        print(f"[Info] [Game ID: {self.game.game_id}] [Msg: Player {self.game.cur_player}'s move result applied]")
 
     def on_pass_start(self):
-        print('[Info] [Game ID: {0}] '.format(self.game.get_game_id()) + \
-              "Player {0} just passed the start point".format(
-                  self.game.get_current_player().get_index()))
+        print(f'[Info] [Game ID: {self.game.game_id}] \
+        [Msg:  Player {self.game.cur_player.index} just passed the start point]')

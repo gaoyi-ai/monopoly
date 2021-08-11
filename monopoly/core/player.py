@@ -1,76 +1,46 @@
+from monopoly.core.land import Land
+
 INIT_PLAYER_MONEY = 1500
 
 
 class Player:
 
     def __init__(self, index):
-        self._index = index
-        self._money = INIT_PLAYER_MONEY
-        self._position = 0
-        self._remaining_stop = 0  # 等待回合数
-        self._properties = set()
+        self.index = index
+        self.money = INIT_PLAYER_MONEY
+        self.position = 0
+        self.remaining_stop = 0  # 等待回合数
+        self.properties = set()
 
-    def get_position(self):
-        return self._position
+    def add_property(self, land: Land):
+        self.properties.add(land)
 
-    def get_money(self):
-        return self._money
-
-    def get_stop(self):
-        return self._remaining_stop
-
-    def add_properties(self, land):
-        self._properties.add(land)
-
-    def get_properties(self):
-        return self._properties
-
-    def get_asset(self):
-        ret = self.get_money()
-        for land in self._properties:
-            ret += land.get_evaluation()
+    def assets_evaluation(self):
+        ret = self.money
+        for land in self.properties:
+            ret += land.evaluate()
         return ret
 
     def remove_property(self, building):
-        self._properties.remove(building)
-
-    def set_money(self, new_val):
-        self._money = new_val
+        self.properties.remove(building)
 
     def add_money(self, val):
-        self._money += val
+        self.money += val
 
     def deduct_money(self, val):
-        self._money -= val
-
-    def get_stop_num(self):
-        return self._remaining_stop
+        self.money -= val
 
     def set_stop(self, val):
-        self._remaining_stop = val
+        self.remaining_stop = val
 
     def add_stop(self, val):
-        self._remaining_stop += val
+        self.remaining_stop += val
 
     def add_one_stop(self):
-        self._remaining_stop += 1
+        self.add_stop(1)
 
-    def deduct_stop_num(self):
-        self._remaining_stop -= 1
-
-    def set_position(self, pos):
-        self._position = pos
-
-    def get_index(self):
-        return self._index
+    def deduct_stop(self, val):
+        self.add_stop(-1 * val)
 
     def __str__(self):
-        return "Player index: {0}".format(self._index)
-
-
-def test():
-    pass
-
-
-if __name__ == '__main__':
-    test()
+        return f"Player index: {self.index}"

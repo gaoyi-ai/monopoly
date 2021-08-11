@@ -1,30 +1,43 @@
 from monopoly.core.game import Game
-from monopoly.core.land import ChanceLand
-from monopoly.core.move_result import MoveResultType, MoveResult
+from monopoly.core.land import Chance
+from monopoly.core.move_receipt import MoveReceiptType, MoveReceipt
 import unittest
 
 from monopoly.core.player import INIT_PLAYER_MONEY
 
 
 class GameTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        BUY_LAND_OPTION = 0
+        PAYMENT = 1
+        REWARD = 2
+        STOP_ROUND = 3
+        CONSTRUCTION_OPTION = 4
+        NOTHING = 5
+
     def setUp(self):
         self.game = Game(4)
-        self.cur_player = self.game.get_current_player()
+        self.player_index = 0
+        self.move_receipt = None
 
     def tearDown(self):
         del self.game
 
     def test_chance_land(self, x=2):
-        move_result: MoveResult
-        steps, move_result = self.game.roll(x)
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(x)
         self.assertEqual(x, steps)
 
-        self.game.make_decision(move_result)
-        if move_result.get_value() > 0:
-            self.assertLess(INIT_PLAYER_MONEY, self.cur_player.get_money())
+        self.move_receipt = self.game.determinate_move_receipt(move_receipt)
+        self.assertEqual(self.game.cur_player.index, self.player_index + 1)
+        if self.move_receipt.type in [MoveReceiptType.BUY_LAND_OPTION, MoveReceiptType.CONSTRUCTION_OPTION,
+                                      MoveReceiptType.PAYMENT]:
+            self.assertGreater(INIT_PLAYER_MONEY, self.game.player_index_of(self.player_index).money)
         else:
-            self.assertGreater(INIT_PLAYER_MONEY, self.cur_player.get_money())
-        self.assertIsInstance(move_result.get_land().get_content(), ChanceLand)
+            self.assertLess(INIT_PLAYER_MONEY, self.game.player_index_of(self.player_index).money)
+        self.assertIsInstance(move_receipt.land.content, Chance)
 
 
 if __name__ == '__main__':
