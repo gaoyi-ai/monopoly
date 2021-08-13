@@ -1,8 +1,14 @@
-from monopoly.core.building import BuildingType, HOUSE_CONSTRUCTION_COST, HOTEL_CONSTRUCTION_COST, \
-    RATIO_RENT_TO_PRICE_FOR_HOUSE, RATIO_RENT_TO_PRICE_FOR_HOTEL
 import logging
 
 logger = logging.getLogger(__name__)
+
+RATIO_RENT_TO_PRICE_FOR_HOUSE = 4
+RATIO_RENT_TO_PRICE_FOR_HOTEL = 2
+
+HOTEL_CONSTRUCTION_COST = 150
+HOUSE_CONSTRUCTION_COST = 100
+
+START_REWARD = 200
 
 
 class LandType:
@@ -14,7 +20,7 @@ class LandType:
     CHANCE = 5
 
     @staticmethod
-    def land_description(val):
+    def description(val):
         ret = ["Constructable",
                "Infrastructure",
                "New Start",
@@ -41,7 +47,13 @@ class Land:
         return 0
 
     def __str__(self):
-        return f"[position: {self.pos}, content type: {LandType.land_description(self.type)}]"
+        return f"[position: {self.pos}, content type: {LandType.description(self.type)}]"
+
+
+class BuildingType:
+    HOUSE = 0
+    HOTEL = 1
+    NOTHING = 2
 
 
 class Constructable:
@@ -59,11 +71,6 @@ class Constructable:
         elif self.properties == BuildingType.HOTEL:
             building_value += HOUSE_CONSTRUCTION_COST * 3 + HOTEL_CONSTRUCTION_COST
         return building_value
-
-    def property_type(self):
-        if self.building_num == 0:
-            return BuildingType.NOTHING
-        return self.properties
 
     @property
     def type(self):

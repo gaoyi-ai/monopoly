@@ -1,9 +1,9 @@
 from typing import Union, Optional
 
 from monopoly.core.card_deck import CardDeck
-from monopoly.core.land import LandType, Land, Constructable, Infrastructure
+from monopoly.core.dice import Dice
+from monopoly.core.land import LandType, Land, Constructable, Infrastructure, START_REWARD
 from monopoly.core.board import Board
-from monopoly.core.building import START_REWARD
 from monopoly.core.move_receipt import MoveReceipt, MoveReceiptType
 from monopoly.core.player import Player
 from monopoly.core.util import InternalLogHandler
@@ -31,6 +31,7 @@ class Game:
         self.game_state = GameStateType.WAIT_FOR_ROLL
         self._card_deck = CardDeck()
         self._board = Board()
+        self._dice = Dice()
         self._current_player_index = 0
         self._move_receipt = None
         self._handlers = []
@@ -126,17 +127,17 @@ class Game:
             self._move_receipt = MoveReceipt(MoveReceiptType.REWARD, START_REWARD, land)
         return self._move_receipt
 
-    def _apply_move_receipt(self, move_result: MoveReceipt) -> bool:
+    def _apply_move_receipt_option(self, move_result: MoveReceipt) -> bool:
         move_result_type = move_result.type
-        val = move_result.value
+        if not move_result.option:  # user choose no
+            return True
+
         if move_result_type == MoveReceiptType.BUY_LAND_OPTION:
             purchasable_land: Union[Constructable, Infrastructure] = move_result.land.content
             if not self._is_purchase_affordable(purchasable_land):
                 self.notify_error("Error: No enough money to buy the property.")
                 return False
-            result, error = move_result.apply_buy(self.cur_player)
-            if error:
-                self.notify_error(error)
+            result = move_result.apply_buy(self.cur_player)
             return result
         elif move_result_type == MoveReceiptType.CONSTRUCTION_OPTION:
             construction_land: Constructable = move_result.land.content
@@ -147,30 +148,55 @@ class Game:
             if error:
                 self.notify_error(error)
             return result
-        else:
-            if move_result_type == MoveReceiptType.PAYMENT:
-                self.cur_player.deduct_money(val)
-                if self.cur_player.money < 0:
-                    self.notify_game_ended()
-                    self.game_state = GameStateType.GAME_ENDED
-                land = move_result.land.content
-                if land.type == LandType.CONSTRUCTABLE or land.type == LandType.INFRASTRUCTURE:
-                    # this is the payment to the player
-                    if land.owner is None:
-                        self.notify_error("Error: The land has no owner.")
-                        return False
-                    # assert land.get_owner_index() is not None
-                    logger.info(f'owner index is: {land.owner}')
-                    rewarded_player: Player = land.owner
-                    rewarded_player.add_money(val)
-            elif move_result_type == MoveReceiptType.REWARD:
-                self.cur_player.add_money(val)
-            elif move_result_type == MoveReceiptType.STOP_ROUND:
-                self.cur_player.add_one_stop()
-            self.notify_move_result_applied()
-            return True
 
-    def _roll_to_next_game_state(self):
+    def _apply_move_receipt_none_option(self, decision: MoveReceipt) -> bool:
+        move_result_type = decision.type
+        val = decision.value
+        if move_result_type == MoveReceiptType.PAYMENT:
+            self.cur_player.deduct_money(val)
+            if self.cur_player.money < 0:
+                self.notify_game_ended()
+                self.game_state = GameStateType.GAME_ENDED
+            content = decision.land.content
+            if content.type == LandType.CONSTRUCTABLE or content.type == LandType.INFRASTRUCTURE:
+                # this is the payment to the player
+                if content.owner is None:
+                    self.notify_error(f"Error: The land:{decision.land}, content:{content} has no owner.")
+                    return False
+                # assert land.get_owner_index() is not None
+                logger.info(f'[land:{decision.land}, content: {content}, owner: {content.owner}]')
+                rewarded_player: Player = content.owner
+                rewarded_player.add_money(val)
+        elif move_result_type == MoveReceiptType.REWARD:
+            self.cur_player.add_money(val)
+        elif move_result_type == MoveReceiptType.STOP_ROUND:
+            self.cur_player.add_one_stop()
+        self.notify_move_result_applied()
+        return True
+
+    def determinate_move_receipt(self, decision: MoveReceipt) -> Optional[MoveReceipt]:
+        if not self.assert_before(GameStateType.WAIT_FOR_DECISION):
+            return None
+        # assert self.status() == GameStateType.WAIT_FOR_DECISION
+        self.notify_decision_made()
+        if decision.type not in [MoveReceiptType.BUY_LAND_OPTION, MoveReceiptType.CONSTRUCTION_OPTION]:
+            logger.info("decision move result: 'PAYMENT' or 'REWARD' or 'STOP_ROUND' or 'NOTHING'")
+            is_success = self._apply_move_receipt_none_option(decision)
+        else:  # decision is option
+            if decision.option is None:
+                self.notify_error("Error: You must choice when you need to make a decision  and apply it.")
+                return None
+            is_success = self._apply_move_receipt_option(decision)
+
+        if is_success:
+            logger.info(f'decision {decision} is made and applied successfully')
+            self._change_player()
+            self._to_next_game_state()
+            return self._move_receipt
+        else:
+            return None
+
+    def _to_next_game_state(self):
         self.game_state = 1 - self.game_state
 
     def assert_before(self, state) -> bool:
@@ -188,42 +214,14 @@ class Game:
         # assert self.status() == GameStateType.WAIT_FOR_ROLL
         self.notify_rolled()
 
-        if steps is None:
-            import random
-            steps1 = random.randint(1, 6)
-            steps2 = random.randint(1, 6)
-            steps = steps1 + steps2
+        steps = self._dice.roll(steps)
         land_dest = self._move(steps)
         if land_dest is None:
             return None
         logger.info(f"land destination:{land_dest}")
-        self._roll_to_next_game_state()
+        self._to_next_game_state()
         move_result = self._generate_move_receipt(land_dest)
         return steps, move_result
-
-    def determinate_move_receipt(self, decision: MoveReceipt):
-        if not self.assert_before(GameStateType.WAIT_FOR_DECISION):
-            return None
-        # assert self.status() == GameStateType.WAIT_FOR_DECISION
-        self.notify_decision_made()
-        if decision.type != MoveReceiptType.BUY_LAND_OPTION and \
-                decision.type != MoveReceiptType.CONSTRUCTION_OPTION:
-            logger.info("decision move result: 'PAYMENT' or 'REWARD' or 'STOP_ROUND' or 'NOTHING'")
-            is_success = self._apply_move_receipt(decision)
-        else:  # decision is option
-            if decision.confirmed is None:
-                self.notify_error("Error: You must confirm when you need to make a decision and apply it.")
-                return None
-            is_success = self._apply_move_receipt(decision)
-            self._move_receipt = MoveReceipt(decision.type, decision.value, decision.land)
-
-        if is_success:
-            logger.info('decision is made and applied successfully')
-            self._change_player()
-            self._roll_to_next_game_state()
-            return self._move_receipt
-        else:
-            return None
 
     # this will return a 40 num array, each indicate the owner of each land
     def get_land_owners(self):
@@ -257,7 +255,7 @@ class Game:
 
     def notify_move_result_applied(self):
         for handler in self._handlers:
-            handler.on_receipt_applied()
+            handler.on_receipt_applied(None)
 
     def notify_error(self, err_msg):
         for handler in self._handlers:
