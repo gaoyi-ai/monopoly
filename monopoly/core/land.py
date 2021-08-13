@@ -40,8 +40,13 @@ class Land:
             return self.content.valuation
         return 0
 
+    def __repr__(self):
+        return f"Land [position: {self.pos}, " \
+               f"description: {self.description}, " \
+               f"content: {self.content}]"
+
     def __str__(self):
-        return f"[position: {self.pos}, content type: {LandType.description(self.type)}]"
+        return self.description
 
 
 class BuildingType:

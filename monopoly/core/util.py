@@ -24,7 +24,7 @@ class MonopolyHandler:
         pass
 
 
-class InternalLogHandler(MonopolyHandler):
+class DebugLogHandler(MonopolyHandler):
 
     def __init__(self, g):
         self.game = g

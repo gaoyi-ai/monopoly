@@ -5,6 +5,10 @@ class Card:
         self.money_deduction = money_deduction
         self.stop_round = stop_round
 
-    def __str__(self):
+    def __repr__(self):
         return f"Card [description:{self.description}, " \
-               f"money_deduction:{self.money_deduction}, stop_round:{self.stop_round}]"
+               f"money deduction:{self.money_deduction}, " \
+               f"stop round:{self.stop_round}]"
+
+    def __str__(self):
+        return self.description

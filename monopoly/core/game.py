@@ -6,7 +6,7 @@ from monopoly.core.land import LandType, Land, Constructable, Infrastructure, ST
 from monopoly.core.board import Board
 from monopoly.core.move_receipt import MoveReceipt, MoveReceiptType
 from monopoly.core.player import Player
-from monopoly.core.util import InternalLogHandler
+from monopoly.core.util import DebugLogHandler
 
 import logging
 
@@ -35,7 +35,7 @@ class Game:
         self._current_player_index = 0
         self._move_receipt = None
         self._handlers = []
-        self.add_game_change_listener(InternalLogHandler(self))
+        self.add_game_change_listener(DebugLogHandler(self))
         self._update_game_id()
         self.notify_new_game()
 
