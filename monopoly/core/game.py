@@ -81,7 +81,7 @@ class Game:
     def _move(self, steps: int) -> Optional[Land]:
         cur_player = self.cur_player
         new_position = (cur_player.position + steps) % len(self._board)
-        if new_position < cur_player.position:
+        if new_position <= cur_player.position:
             # A new round
             cur_player.add_money(START_REWARD)
             self.notify_pass_start()

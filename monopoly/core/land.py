@@ -2,12 +2,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-RATIO_RENT_TO_PRICE_FOR_HOUSE = 4
-RATIO_RENT_TO_PRICE_FOR_HOTEL = 2
-
-HOTEL_CONSTRUCTION_COST = 150
-HOUSE_CONSTRUCTION_COST = 100
-
 START_REWARD = 200
 
 
@@ -41,9 +35,9 @@ class Land:
     def type(self):
         return self.content.type
 
-    def get_evaluation(self):
-        if self.type == LandType.INFRASTRUCTURE or self.type == LandType.CONSTRUCTABLE:
-            return self.content.evaluate()
+    def evaluate(self):
+        if self.type in [LandType.INFRASTRUCTURE, LandType.CONSTRUCTABLE]:
+            return self.content.valuation
         return 0
 
     def __str__(self):
@@ -57,6 +51,11 @@ class BuildingType:
 
 
 class Constructable:
+    RATIO_RENT_TO_PRICE_FOR_HOUSE = 4
+    RATIO_RENT_TO_PRICE_FOR_HOTEL = 2
+
+    HOTEL_CONSTRUCTION_COST = 150
+    HOUSE_CONSTRUCTION_COST = 100
 
     def __init__(self, price):
         self.price = price
@@ -64,13 +63,26 @@ class Constructable:
         self.building_num = 0
         self.owner = None
 
-    def evaluate(self):
+    @property
+    def valuation(self):
         building_value = self.price
         if self.properties == BuildingType.HOUSE:
-            building_value += HOUSE_CONSTRUCTION_COST * self.building_num
+            building_value += Constructable.HOUSE_CONSTRUCTION_COST * self.building_num
         elif self.properties == BuildingType.HOTEL:
-            building_value += HOUSE_CONSTRUCTION_COST * 3 + HOTEL_CONSTRUCTION_COST
+            building_value += Constructable.HOUSE_CONSTRUCTION_COST * 3 + Constructable.HOTEL_CONSTRUCTION_COST
         return building_value
+
+    @property
+    def toll(self):
+        if self.properties == BuildingType.NOTHING:
+            rent = 0
+        elif self.properties == BuildingType.HOTEL:
+            rent = (self.price + Constructable.HOTEL_CONSTRUCTION_COST) / Constructable.RATIO_RENT_TO_PRICE_FOR_HOTEL
+        else:
+            rent = (
+                               self.price + self.building_num * Constructable.HOUSE_CONSTRUCTION_COST) / Constructable.RATIO_RENT_TO_PRICE_FOR_HOUSE
+        logger.info(f"[Constructable: {self}, toll: {rent}]")
+        return rent
 
     @property
     def type(self):
@@ -78,8 +90,8 @@ class Constructable:
 
     def next_construction_price(self):
         if self.properties == BuildingType.HOUSE and self.building_num == 3:
-            return HOTEL_CONSTRUCTION_COST
-        return HOUSE_CONSTRUCTION_COST
+            return Constructable.HOTEL_CONSTRUCTION_COST
+        return Constructable.HOUSE_CONSTRUCTION_COST
 
     @property
     def properties_num(self):
@@ -106,16 +118,6 @@ class Constructable:
         elif self.properties == BuildingType.HOTEL:
             return False
 
-    def rent(self):
-        if self.properties == BuildingType.NOTHING:
-            rent = 0
-        elif self.properties == BuildingType.HOTEL:
-            rent = (self.price + HOTEL_CONSTRUCTION_COST) / RATIO_RENT_TO_PRICE_FOR_HOTEL
-        else:
-            rent = (self.price + self.building_num * HOUSE_CONSTRUCTION_COST) / RATIO_RENT_TO_PRICE_FOR_HOUSE
-        logger.info(f"rent: {rent}")
-        return rent
-
 
 class Infrastructure:
 
@@ -132,7 +134,7 @@ class Infrastructure:
         return self.price / 4
 
     @property
-    def evaluation(self):
+    def valuation(self):
         return self.price
 
 

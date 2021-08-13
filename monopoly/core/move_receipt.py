@@ -80,7 +80,7 @@ class MoveReceipt:
                 if is_affordable \
                 else MoveReceipt(MoveReceiptType.NOTHING, price, land)
         else:  # owned by others
-            rent = construction.rent()
+            rent = construction.toll
             return MoveReceipt(MoveReceiptType.PAYMENT, rent, land)
 
     @staticmethod
