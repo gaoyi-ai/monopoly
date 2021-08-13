@@ -1,5 +1,5 @@
 from monopoly.core.game import Game
-from monopoly.core.land import Chance
+from monopoly.core.land import Chance, Infrastructure, Constructable, START_REWARD
 from monopoly.core.move_receipt import MoveReceiptType, MoveReceipt
 import unittest
 
@@ -13,7 +13,7 @@ class GameTestCase(unittest.TestCase):
         pass
 
     def setUp(self):
-        self.game = Game(4)
+        self.game = Game(2)  # default 2 players
         self.player_index = 0
         self.move_receipt = None
 
@@ -33,6 +33,150 @@ class GameTestCase(unittest.TestCase):
         else:
             self.assertLess(INIT_PLAYER_MONEY, self.game.player_index_of(self.player_index).money)
         self.assertIsInstance(move_receipt.land.content, Chance)
+
+    def test_infrastructure_buy_and_payment(self):
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(5)
+        move_receipt.option = True
+        infrastructure: Infrastructure = move_receipt.land.content
+
+        self.assertEqual(move_receipt.type, MoveReceiptType.BUY_LAND_OPTION)
+        first_player = self.game.cur_player
+        self.game.determinate_move_receipt(move_receipt)
+        # buy
+        first_player_money = first_player.money
+        self.assertEqual(first_player_money, INIT_PLAYER_MONEY - infrastructure.price)
+        self.assertEqual(first_player, infrastructure.owner)
+
+        steps, move_receipt = self.game.roll(5)
+        self.assertEqual(move_receipt.type, MoveReceiptType.PAYMENT)
+        second_player = self.game.cur_player
+        self.game.determinate_move_receipt(move_receipt)
+        # buy
+        self.assertEqual(second_player.money, INIT_PLAYER_MONEY - infrastructure.payment)
+        self.assertEqual(first_player.money, first_player_money + move_receipt.value)
+
+    def test_first_player_not_buy_second_buy(self):
+        first_player = self.game.cur_player
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(5)
+        infrastructure: Infrastructure = move_receipt.land.content
+        move_receipt.option = False
+        self.game.determinate_move_receipt(move_receipt)
+        # first not buy
+        self.assertEqual(first_player.position, 5)
+        self.assertEqual(first_player.money, INIT_PLAYER_MONEY)
+        self.assertIsNone(infrastructure.owner)
+        # second buy
+        second_player = self.game.cur_player
+        steps, move_receipt = self.game.roll(5)
+        move_receipt.option = True
+        self.game.determinate_move_receipt(move_receipt)
+        self.assertEqual(second_player.position, 5)
+        self.assertEqual(second_player.money, INIT_PLAYER_MONEY - infrastructure.price)
+        self.assertEqual(infrastructure.owner, second_player)
+
+    def test_two_rounds_buy_payment(self):
+        # round1
+        first_player = self.game.cur_player
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(3)
+        move_receipt.option = False
+        self.game.determinate_move_receipt(move_receipt)
+        self.assertEqual(first_player.money, INIT_PLAYER_MONEY)
+
+        second_player = self.game.cur_player
+        steps, move_receipt = self.game.roll(6)
+        constructable: Constructable = move_receipt.land.content
+        move_receipt.option = True
+        self.game.determinate_move_receipt(move_receipt)
+        second_player_money = second_player.money
+        self.assertEqual(second_player_money, INIT_PLAYER_MONEY - constructable.price)
+        self.assertEqual(constructable.owner, second_player)
+
+        # round2
+        steps, move_receipt = self.game.roll(3)
+        constructable: Constructable = move_receipt.land.content
+        self.game.determinate_move_receipt(move_receipt)
+        self.assertEqual(move_receipt.type, MoveReceiptType.PAYMENT)
+        self.assertEqual(first_player.money, INIT_PLAYER_MONEY - constructable.toll)
+        self.assertEqual(second_player.money, second_player_money + constructable.toll)
+
+    def test_to_jail_stop_one_round(self):
+        # round1
+        first_player = self.game.cur_player
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(10)
+        self.assertEqual(move_receipt.type, MoveReceiptType.STOP_ROUND)
+        self.assertEqual(first_player.position, move_receipt.land.pos)
+        self.game.determinate_move_receipt(move_receipt)
+
+        second_player = self.game.cur_player
+        steps, move_receipt = self.game.roll(9)
+        move_receipt.option = False
+        self.game.determinate_move_receipt(move_receipt)
+
+        # round2
+        self.assertIs(self.game.cur_player, second_player)
+        steps, move_receipt = self.game.roll(5)
+        move_receipt.option = False
+        self.game.determinate_move_receipt(move_receipt)
+
+        # round3
+        self.assertIs(self.game.cur_player, first_player)
+        steps, move_receipt = self.game.roll(6)
+        self.assertEqual(first_player.position, move_receipt.land.pos)
+
+    def test_construct_house(self):
+        self.game = Game(1)
+        player = self.game.cur_player
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(3)
+        constructable: Constructable = move_receipt.land.content
+        self.assertEqual(move_receipt.type, MoveReceiptType.BUY_LAND_OPTION)
+        move_receipt.option = True
+        self.game.determinate_move_receipt(move_receipt)
+        after_buy = player.money
+        self.assertEqual(after_buy, INIT_PLAYER_MONEY - constructable.price)
+
+        steps, move_receipt = self.game.roll(40)
+        # bypass start
+        after_pass_start = player.money
+        self.assertEqual(after_pass_start, after_buy + START_REWARD)
+
+        self.assertEqual(move_receipt.type, MoveReceiptType.CONSTRUCTION_OPTION)
+        move_receipt.option = True
+        self.game.determinate_move_receipt(move_receipt)
+        after_house = player.money
+        self.assertEqual(after_house, after_pass_start - Constructable.HOUSE_CONSTRUCTION_COST)
+
+    def test_another_player_payment_in_construction_land(self):
+        # round1
+        first_player = self.game.cur_player
+        move_receipt: MoveReceipt
+        steps, move_receipt = self.game.roll(3)
+        constructable: Constructable = move_receipt.land.content
+        self.assertEqual(move_receipt.type, MoveReceiptType.BUY_LAND_OPTION)
+        move_receipt.option = True
+        self.game.determinate_move_receipt(move_receipt)
+        second_player = self.game.cur_player
+        steps, move_receipt = self.game.roll(9)
+        move_receipt.option = False
+        self.game.determinate_move_receipt(move_receipt)
+
+        # round2
+        steps, move_receipt = self.game.roll(40)
+        self.assertEqual(move_receipt.type, MoveReceiptType.CONSTRUCTION_OPTION)
+        move_receipt.option = True
+        self.game.determinate_move_receipt(move_receipt)
+        first_player_after_house = first_player.money
+        self.assertEqual(first_player_after_house,
+                         INIT_PLAYER_MONEY + START_REWARD - constructable.price - Constructable.HOUSE_CONSTRUCTION_COST)
+
+        steps, move_receipt = self.game.roll(34)
+        self.assertEqual(move_receipt.type, MoveReceiptType.PAYMENT)
+        self.game.determinate_move_receipt(move_receipt)
+        self.assertEqual(second_player.money, INIT_PLAYER_MONEY + START_REWARD - constructable.toll)
 
 
 if __name__ == '__main__':
