@@ -108,13 +108,16 @@ class MoveReceipt:
         player.deduct_money(self.value)
         return True, None
 
+    def __repr__(self):
+        return f"Move Receipt [" \
+               f"type: {MoveReceiptType.description(self.type)}. " \
+               f"value: {self.value}, " \
+               f"land: {self.land}, " \
+               f"option: {self.option}, " \
+               f"msg: {self.msg}]"
+
     def __str__(self):
-        saying = self.msg if self.msg else ""
-        saying += MoveReceiptType.description(self.type)
-        ret = saying + f" value:{self.value}, land: {self.land}"
-        if self.option is not None:
-            ret += f" decision: {self.option}"
-        return ret
+        return self.__repr__()
 
     def beautify(self):
         saying = self.msg if self.msg else ""
@@ -129,7 +132,6 @@ class MoveReceipt:
             pass
         elif self.type == MoveReceiptType.CONSTRUCTION_OPTION:
             saying += "The cost for the building is " + str(self.value)
-        else:
+        else:  # Nothing
             pass
-
         return saying
