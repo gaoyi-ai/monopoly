@@ -1,4 +1,3 @@
-from monopoly.core.building import START_REWARD
 from monopoly.core.land import *
 
 

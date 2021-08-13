@@ -3,6 +3,10 @@ from typing import Optional
 from monopoly.core.land import Land, Constructable, Infrastructure
 from monopoly.core.player import Player
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class ModalTitleType:
     @staticmethod
@@ -26,12 +30,12 @@ class MoveReceiptType:
 
     @staticmethod
     def description(val):
-        ret = ["is choosing to buy or not. ",
-               "should make a payment. ",
-               "is rewarded a fortune. ",
-               "is stopped for one round. ",
-               "is choosing to build a new building or not. ",
-               "Nothing actually happened. "]
+        ret = ["Now choosing to buy or not.",
+               "Now should make a payment.",
+               "Now reward a fortune.",
+               "Now stopped for one round.",
+               "Now choosing to build a new building or not.",
+               "Nothing actually happened."]
         return ret[val]
 
 
@@ -41,14 +45,21 @@ class MoveReceipt:
         self.type = move_result_type
         self.value = value
         self.land = land
-        self.confirmed = None
+        self._option = None  # user choice
         self.msg = None
 
-    def confirm(self, confirm):
-        if self.is_option():
-            self.confirmed = confirm
+    @property
+    def option(self):
+        return self._option
 
-    def is_option(self):
+    @option.setter
+    def option(self, choice):
+        if self._is_option():
+            self._option = choice
+        else:
+            logger.error("Error: Cannot make a decision because it can not be chosen.")
+
+    def _is_option(self):
         return self.type == MoveReceiptType.BUY_LAND_OPTION or \
                self.type == MoveReceiptType.CONSTRUCTION_OPTION
 
@@ -88,31 +99,27 @@ class MoveReceipt:
 
     def apply_buy(self, player: Player):
         purchasable: Optional[Constructable, Infrastructure] = self.land.content
-        if self.confirmed is True:
-            purchasable.owner = player
-            player.add_property(purchasable)
-            player.deduct_money(purchasable.price)
-            return True, None
-        return False, f"Error: Move result {self} not confirmed."
+        purchasable.owner = player
+        player.add_property(purchasable)
+        player.deduct_money(purchasable.price)
+        return True
 
     def apply_construction(self, player: Player):
         construction: Constructable = self.land.content
         if construction.owner != player:
             return False, f"Error: This land is not owned by {player}, cannot make construction."
         # assert construction.get_owner_index() == self._current_player_index
-        if self.confirmed is True:
-            if construction.incr_property() is False:
-                return False, "Error: Add property fail."
-            player.deduct_money(construction.next_construction_price())
-            return True, None
-        return False, f"Error: Move result {self} not confirmed."
+        if construction.incr_property() is False:
+            return False, "Error: Add property fail."
+        player.deduct_money(construction.next_construction_price())
+        return True, None
 
     def __str__(self):
         saying = self.msg if self.msg else ""
         saying += MoveReceiptType.description(self.type)
         ret = saying + f" value:{self.value}, land: {self.land}"
-        if self.confirmed is not None:
-            ret += f" decision: {self.confirmed}"
+        if self.option is not None:
+            ret += f" decision: {self.option}"
         return ret
 
     def beautify(self):

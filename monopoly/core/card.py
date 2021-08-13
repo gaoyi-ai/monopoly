@@ -6,4 +6,5 @@ class Card:
         self.stop_round = stop_round
 
     def __str__(self):
-        return self.description
+        return f"Card [description:{self.description}, " \
+               f"money_deduction:{self.money_deduction}, stop_round:{self.stop_round}]"
