@@ -81,7 +81,7 @@ class Game:
     def _move(self, steps: int) -> Optional[Land]:
         cur_player = self.cur_player
         new_position = (cur_player.position + steps) % len(self._board)
-        if new_position <= cur_player.position:
+        if new_position != 0 and new_position <= cur_player.position:
             # A new round
             cur_player.add_money(START_REWARD)
             self.notify_pass_start()
@@ -97,22 +97,18 @@ class Game:
         return self.cur_player.money >= land.price
 
     def _is_construction_affordable(self, land: Constructable):
-        return self.cur_player.money >= land.next_construction_price()
+        return self.cur_player.money >= land.construction_price
 
     def _generate_move_receipt(self, land: Land) -> MoveReceipt:
         land_type = land.type
         if land_type == LandType.CONSTRUCTABLE:
-            construction = land.content
-            affordable = self._is_purchase_affordable(construction)
-            self._move_receipt = MoveReceipt.handle_construction(self.cur_player, land, affordable)
+            self._move_receipt = MoveReceipt.handle_construction(self.cur_player, land)
         elif land_type == LandType.INFRASTRUCTURE:
-            infrastructure = land.content
-            affordable = self._is_purchase_affordable(infrastructure)
-            self._move_receipt = MoveReceipt.handle_infrastructure(self.cur_player, land, affordable)
+            self._move_receipt = MoveReceipt.handle_infrastructure(self.cur_player, land)
         elif land_type == LandType.PARKING:
             self._move_receipt = MoveReceipt(MoveReceiptType.NOTHING, 0, land)
         elif land_type == LandType.JAIL:
-            self._move_receipt = MoveReceipt(MoveReceiptType.STOP_ROUND, 1, land)
+            self._move_receipt = MoveReceipt(MoveReceiptType.STOP_ROUND, 0, land)
         elif land_type == LandType.CHANCE:
             card = self._card_deck.draw()
             if card.money_deduction > 0:
@@ -157,8 +153,9 @@ class Game:
             if self.cur_player.money < 0:
                 self.notify_game_ended()
                 self.game_state = GameStateType.GAME_ENDED
+                return False
             content = decision.land.content
-            if content.type == LandType.CONSTRUCTABLE or content.type == LandType.INFRASTRUCTURE:
+            if content.type in [LandType.CONSTRUCTABLE, LandType.INFRASTRUCTURE]:
                 # this is the payment to the player
                 if content.owner is None:
                     self.notify_error(f"Error: The land:{decision.land}, content:{content} has no owner.")
@@ -171,21 +168,23 @@ class Game:
             self.cur_player.add_money(val)
         elif move_result_type == MoveReceiptType.STOP_ROUND:
             self.cur_player.add_one_stop()
-        self.notify_move_result_applied()
+        else:
+            pass
+        self.notify_move_result_applied(decision)
         return True
 
-    def determinate_move_receipt(self, decision: MoveReceipt) -> Optional[MoveReceipt]:
+    def execute_move_receipt(self, decision: MoveReceipt) -> Optional[MoveReceipt]:
         if not self.assert_before(GameStateType.WAIT_FOR_DECISION):
             return None
         # assert self.status() == GameStateType.WAIT_FOR_DECISION
-        self.notify_decision_made()
+        self.notify_decision_made(decision)
         if decision.type not in [MoveReceiptType.BUY_LAND_OPTION, MoveReceiptType.CONSTRUCTION_OPTION]:
             logger.info("decision move result: 'PAYMENT' or 'REWARD' or 'STOP_ROUND' or 'NOTHING'")
             is_success = self._apply_move_receipt_none_option(decision)
         else:  # decision is option
             if decision.option is None:
-                self.notify_error("Error: You must choice when you need to make a decision  and apply it.")
-                return None
+                self.notify_error(f"Error: You must choose option to decision {decision}.")
+                return MoveReceipt(MoveReceiptType.NOTHING, 0, decision.land)
             is_success = self._apply_move_receipt_option(decision)
 
         if is_success:
@@ -193,8 +192,8 @@ class Game:
             self._change_player()
             self._to_next_game_state()
             return self._move_receipt
-        else:
-            return None
+        else:  # cannot affordable
+            return MoveReceipt(MoveReceiptType.NOTHING, 0, decision.land)
 
     def _to_next_game_state(self):
         self.game_state = 1 - self.game_state
@@ -249,13 +248,13 @@ class Game:
         for handler in self._handlers:
             handler.on_player_changed()
 
-    def notify_decision_made(self):
+    def notify_decision_made(self, mr):
         for handler in self._handlers:
-            handler.on_decision_made()
+            handler.on_decision_made(mr)
 
-    def notify_move_result_applied(self):
+    def notify_move_result_applied(self, mr):
         for handler in self._handlers:
-            handler.on_receipt_applied(None)
+            handler.on_receipt_applied(mr)
 
     def notify_error(self, err_msg):
         for handler in self._handlers:
