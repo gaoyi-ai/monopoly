@@ -51,6 +51,7 @@ class BuildingType:
 
 
 class Constructable:
+    RATIO_RENT_TO_PRICE_NOTHING = 5
     RATIO_RENT_TO_PRICE_FOR_HOUSE = 4
     RATIO_RENT_TO_PRICE_FOR_HOTEL = 2
 
@@ -59,28 +60,28 @@ class Constructable:
 
     def __init__(self, price):
         self.price = price
-        self.properties = BuildingType.NOTHING
+        self.property_type = BuildingType.NOTHING
         self.building_num = 0
         self.owner = None
 
     @property
     def valuation(self):
         building_value = self.price
-        if self.properties == BuildingType.HOUSE:
+        if self.property_type == BuildingType.HOUSE:
             building_value += Constructable.HOUSE_CONSTRUCTION_COST * self.building_num
-        elif self.properties == BuildingType.HOTEL:
+        elif self.property_type == BuildingType.HOTEL:
             building_value += Constructable.HOUSE_CONSTRUCTION_COST * 3 + Constructable.HOTEL_CONSTRUCTION_COST
         return building_value
 
     @property
     def toll(self):
-        if self.properties == BuildingType.NOTHING:
-            rent = 0
-        elif self.properties == BuildingType.HOTEL:
+        if self.property_type == BuildingType.NOTHING:
+            rent = self.price / Constructable.RATIO_RENT_TO_PRICE_NOTHING
+        elif self.property_type == BuildingType.HOTEL:
             rent = (self.price + Constructable.HOTEL_CONSTRUCTION_COST) / Constructable.RATIO_RENT_TO_PRICE_FOR_HOTEL
         else:
-            rent = (
-                               self.price + self.building_num * Constructable.HOUSE_CONSTRUCTION_COST) / Constructable.RATIO_RENT_TO_PRICE_FOR_HOUSE
+            rent = (self.price + self.building_num * Constructable.HOUSE_CONSTRUCTION_COST) / \
+                   Constructable.RATIO_RENT_TO_PRICE_FOR_HOUSE
         logger.info(f"[Constructable: {self}, toll: {rent}]")
         return rent
 
@@ -88,34 +89,31 @@ class Constructable:
     def type(self):
         return LandType.CONSTRUCTABLE
 
-    def next_construction_price(self):
-        if self.properties == BuildingType.HOUSE and self.building_num == 3:
-            return Constructable.HOTEL_CONSTRUCTION_COST
-        return Constructable.HOUSE_CONSTRUCTION_COST
-
     @property
-    def properties_num(self):
-        return self.building_num
+    def construction_price(self):
+        return Constructable.HOTEL_CONSTRUCTION_COST \
+            if self.property_type == BuildingType.HOUSE and self.building_num == 3 \
+            else Constructable.HOUSE_CONSTRUCTION_COST
 
     def clear_properties(self):
-        self.properties = BuildingType.NOTHING
+        self.property_type = BuildingType.NOTHING
         self.building_num = 0
 
     def is_constructable(self):
-        return not self.properties == BuildingType.HOTEL
+        return not self.property_type == BuildingType.HOTEL
 
     def incr_property(self) -> bool:
-        if self.properties == BuildingType.NOTHING or \
-                (self.properties == BuildingType.HOUSE and
-                 self.properties_num < 3):
+        if self.property_type == BuildingType.NOTHING or \
+                (self.property_type == BuildingType.HOUSE and
+                 self.building_num < 3):
             self.building_num += 1
-            self.properties = BuildingType.HOUSE
+            self.property_type = BuildingType.HOUSE
             return True
-        elif self.properties == BuildingType.HOUSE and self.properties_num == 3:
-            self.properties = BuildingType.HOTEL
+        elif self.property_type == BuildingType.HOUSE and self.building_num == 3:
+            self.property_type = BuildingType.HOTEL
             self.building_num = 1
             return True
-        elif self.properties == BuildingType.HOTEL:
+        elif self.property_type == BuildingType.HOTEL:
             return False
 
 

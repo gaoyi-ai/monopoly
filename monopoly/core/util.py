@@ -14,7 +14,7 @@ class MonopolyHandler:
     def on_player_changed(self):
         pass
 
-    def on_decision_made(self):
+    def on_decision_made(self, mr):
         pass
 
     def on_receipt_applied(self, mr):
@@ -35,8 +35,8 @@ class InternalLogHandler(MonopolyHandler):
     def on_rolled(self):
         print(f'[Info] [Game ID: {self.game.game_id}] [Msg: current player {self.game.cur_player.index} is rolling]')
 
-    def on_decision_made(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Decision is made]')
+    def on_decision_made(self, mr):
+        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Decision {mr} is made]')
 
     def on_new_game(self):
         print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Game Started]')
@@ -52,5 +52,5 @@ class InternalLogHandler(MonopolyHandler):
         print(f"[Info] [Game ID: {self.game.game_id}] [Msg: Player {self.game.cur_player}'s move result {mr} applied]")
 
     def on_pass_start(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] \
-        [Msg:  Player {self.game.cur_player.index} just passed the start point]')
+        print(f'[Info] [Game ID: {self.game.game_id}] '
+              f'[Msg:  Player {self.game.cur_player.index} just passed the start point]')

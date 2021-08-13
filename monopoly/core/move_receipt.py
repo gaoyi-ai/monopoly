@@ -64,35 +64,29 @@ class MoveReceipt:
                self.type == MoveReceiptType.CONSTRUCTION_OPTION
 
     @staticmethod
-    def handle_construction(player, land: Land, is_affordable: bool):
+    def handle_construction(player, land: Land):
         construction: Constructable = land.content
         if construction.owner is None:  # land is none owned
             price = construction.price
-            return MoveReceipt(MoveReceiptType.BUY_LAND_OPTION, price, land) \
-                if is_affordable \
-                else MoveReceipt(MoveReceiptType.NOTHING, price, land)
+            return MoveReceipt(MoveReceiptType.BUY_LAND_OPTION, price, land)
 
-        elif construction.owner == player:  # land is owned by self
+        elif construction.owner is player:  # land is owned by self
             if not construction.is_constructable():
                 return MoveReceipt(MoveReceiptType.NOTHING, 0, land)
-            price = construction.next_construction_price()
-            return MoveReceipt(MoveReceiptType.CONSTRUCTION_OPTION, price, land) \
-                if is_affordable \
-                else MoveReceipt(MoveReceiptType.NOTHING, price, land)
+            price = construction.construction_price
+            return MoveReceipt(MoveReceiptType.CONSTRUCTION_OPTION, price, land)
         else:  # owned by others
             rent = construction.toll
             return MoveReceipt(MoveReceiptType.PAYMENT, rent, land)
 
     @staticmethod
-    def handle_infrastructure(player, land: Land, is_affordable: bool):
+    def handle_infrastructure(player, land: Land):
         infrastructure: Infrastructure = land.content
         if infrastructure.owner is None:
             price = infrastructure.price
-            return MoveReceipt(MoveReceiptType.BUY_LAND_OPTION, price, land) \
-                if is_affordable \
-                else MoveReceipt(MoveReceiptType.NOTHING, price, land)
+            return MoveReceipt(MoveReceiptType.BUY_LAND_OPTION, price, land)
         else:
-            if infrastructure.owner == player:
+            if infrastructure.owner is player:
                 return MoveReceipt(MoveReceiptType.NOTHING, 0, land)
             payment = infrastructure.payment
             return MoveReceipt(MoveReceiptType.PAYMENT, payment, land)
@@ -101,17 +95,17 @@ class MoveReceipt:
         purchasable: Optional[Constructable, Infrastructure] = self.land.content
         purchasable.owner = player
         player.add_property(purchasable)
-        player.deduct_money(purchasable.price)
+        player.deduct_money(self.value)
         return True
 
     def apply_construction(self, player: Player):
         construction: Constructable = self.land.content
-        if construction.owner != player:
+        if construction.owner is not player:
             return False, f"Error: This land is not owned by {player}, cannot make construction."
         # assert construction.get_owner_index() == self._current_player_index
-        if construction.incr_property() is False:
+        if not construction.incr_property():
             return False, "Error: Add property fail."
-        player.deduct_money(construction.next_construction_price())
+        player.deduct_money(self.value)
         return True, None
 
     def __str__(self):
