@@ -37,7 +37,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'monopoly.apps.MonopolyConfig',
     'channels',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_spectacular',
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -131,5 +146,11 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/monopoly/'
-LOGIN_REDIRECT_URL = '/monopoly/join/'
+LOGIN_URL = '/monopoly/login/'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'variant monopoly CSR API',
+    'DESCRIPTION': '159356 Capstone Project',
+    'VERSION': '1.0.0',
+    # OTHER SETTINGS
+}
