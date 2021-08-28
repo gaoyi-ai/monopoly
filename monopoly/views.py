@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
-from .forms import ProfileForm
 from .models import Profile
 
 
@@ -23,12 +22,13 @@ class JoinView(View):
     def get(self, request, *args, **kwargs):
         user = request.user
         host_name = kwargs.get('host_name', user.username)
-        profile = Profile.objects.get(user=user)
+        avatar = Profile.objects.get(user=user).avatar
+        avatar = avatar if avatar.name else ''
 
         return render(request, 'join_view.html', {
             "user": {
                 "name": user.username,
-                "avatar": profile.avatar
+                "avatar": avatar
             },
             "host_name": host_name if len(host_name) else user.username
         })
@@ -113,7 +113,7 @@ class ProfileView(View):
     def get(self, request, *args, **kwargs):
         user = request.user
         avatar = Profile.objects.get(user=user).avatar
-        avatar = avatar if avatar.file else ''
+        avatar = avatar if avatar.name else ''
         res = {
             "user": user,
             "avatar": avatar

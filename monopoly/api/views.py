@@ -32,8 +32,8 @@ class Login(viewsets.ViewSet):
     permission_classes = []
 
     def create(self, request, format=None):
-        username = request.data['username']
-        password = request.data['password']
+        username = request.data.get('username', None)
+        password = request.data.get('password', None)
         user: User = authenticate(username=username, password=password)
         if user is not None and user.auth_token == request.auth:
             if user.is_active:
