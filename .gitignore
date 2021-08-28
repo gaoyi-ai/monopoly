@@ -5,3 +5,13 @@ __pycache__/
 db.sqlite3
 
 venv/
+
+package.json
+
+package-lock.json
+
+node_modules/
+
+monopoly/migrations/
+
+media/
