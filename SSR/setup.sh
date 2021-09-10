@@ -2,7 +2,7 @@
 virtual="venv"
 echo -e "\n++++++++++STATUS++++++++++++" 
 echo -e "Building the virtual environment....."
- 
+
 # created the virtual environment directory
 python3 -m venv $virtual
 echo -e "\nVirtual Environment Created!!!"

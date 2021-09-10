@@ -217,7 +217,7 @@ class Game:
         land_dest = self._move(steps)
         if land_dest is None:
             return None
-        logger.info(f"land destination:{land_dest}")
+        logger.info(f"land destination: {land_dest}")
         self._to_next_game_state()
         move_result = self._generate_move_receipt(land_dest)
         return steps, move_result

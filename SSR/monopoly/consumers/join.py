@@ -43,10 +43,10 @@ def build_join_failed_msg():
 
 async def build_join_reply_msg(room_name):
     players = rooms[room_name]
-    logger.info('players: ', players)
+    logger.info(f'players: {players}')
     data = []
     for player in players:
-        logger.info('cur :', player)
+        logger.info(f'cur : {player}')
         user = await get_user(player)
         profile = await get_profile(user)
         avatar = profile.avatar.url if profile.avatar.name else ''
