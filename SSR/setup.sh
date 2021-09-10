@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 virtual="venv"
 echo -e "\n++++++++++STATUS++++++++++++" 
 echo -e "Building the virtual environment....."
