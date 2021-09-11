@@ -43,6 +43,7 @@ class Login(viewsets.ViewSet):
                     'username': username,
                     'profile': {
                         'id': user.profile.id,
+                        'avatar': user.profile.avatar.url if user.profile.avatar.name else ''
                     }
                 }
                 return Response(data=ret, status=status.HTTP_200_OK)

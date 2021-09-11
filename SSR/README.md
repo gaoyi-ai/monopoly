@@ -1,4 +1,4 @@
-# variant-monopoly
+# variant-monopoly-SSR
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
@@ -8,11 +8,12 @@
 
 159356 SE Capstone Project
 
-## How to run SSR
+## How to run
 
-1. `cd SSR/`
-2. `bash setup.sh` or `sudo bash setup.sh`
-3. open [127.0.0.1:8000/monopoly/](127.0.0.1:8000/monopoly/) in your browser.
+1. clone this current branch of the project.
+2. `cd monopoly/`
+3. `bash setup.sh` or `sudo bash setup.sh`
+4. [127.0.0.1:8000/monopoly/](127.0.0.1:8000/monopoly/) or click [here](127.0.0.1:8000/monopoly/) in your browser.
 
 ### NOTE
 
@@ -32,7 +33,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/gaoyi-ai"><img src="https://avatars0.githubusercontent.com/u/60838368?s=400&v=4" width="100px;" alt=""/><br /><sub><b>Yi</b></sub></a><br /><a href="https://github.com/gaoyi-ai/monopoly/commits?author=gaoyi-ai" title="Code">💻</a> <a href="https://github.com/gaoyi-ai/monopoly/commits?author=gaoyi-ai" title="Tests">⚠️</a> <a href="#data-gaoyi-ai" title="Data">🔣</a> <a href="#ideas-gaoyi-ai" title="Ideas, Planning, & Feedback">🤔</a> <a href="#projectManagement-gaoyi-ai" title="Project Management">📆</a> <a href="https://github.com/gaoyi-ai/monopoly/pulls?q=is%3Apr+reviewed-by%3Agaoyi-ai" title="Reviewed Pull Requests">👀</a></td>
  </tr>
 </table>
-
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
