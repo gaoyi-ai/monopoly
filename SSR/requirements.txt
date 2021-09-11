@@ -8,6 +8,7 @@ constantly==15.1.0
 cryptography==3.4.7
 daphne==3.0.2
 Django==3.2.5
+django-cors-headers==3.8.0
 djangorestframework==3.12.4
 drf-spectacular==0.17.3
 hyperlink==21.0.0
