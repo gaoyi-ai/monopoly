@@ -159,6 +159,6 @@ SPECTACULAR_SETTINGS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
-    "http://39.105.184.237:8000/",
-    "http://3.18.221.239:8000/",
+    "http://39.105.184.237:8000",
+    "http://3.18.221.239:8000",
 ]
