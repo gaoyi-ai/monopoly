@@ -129,7 +129,7 @@ class JoinView {
     }
 
     navigateBack() {
-        window.location = `http://${window.location.host}/monopoly/join`;
+        window.location = `http://${window.location.host}/monopoly`;
     }
 
     copyToClipboard() {

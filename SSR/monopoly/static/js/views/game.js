@@ -166,7 +166,6 @@ class GameView {
                     </span>
                     <img class="user-role" src="/static/img/player_${i}.png">
                 </div>`;
-            console.log(this.$usersContainer.innerHTML);
         }
 
 
@@ -230,7 +229,7 @@ class GameView {
     * }],
     * displayTime: int // seconds to display
     * */
-    showModal(playerIndex, title, subTitle, message, buttons, displayTime) {
+    async showModal(playerIndex, title, subTitle, message, buttons, displayTime) {
         return new Promise(resolve => {
             if (playerIndex === null) {
                 this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
@@ -350,7 +349,7 @@ class GameView {
 
     async handleAddErr() {
         await this.showModal(null, "Permission Denied", "Game Not Found", "Navigating back... Create your own game with your friends!", [], 5);
-        window.location = `http://${window.location.host}/monopoly/join`;
+        window.location = `http://${window.location.host}/monopoly`;
     }
 
 
@@ -457,7 +456,7 @@ class GameView {
             });
             all_asset.splice(big_index, 1, null);
         }
-        this.showScoreboard(result);
+        await this.showScoreboard(result);
     }
 
     handleChat(message) {
@@ -515,7 +514,7 @@ class GameView {
     *   score: int
     * }]
     * */
-    showScoreboard(scoreList) {
+    async showScoreboard(scoreList) {
         let scoreboardTemplate = `<div id="scoreboard">`;
         for (let index in scoreList) {
             let rank = parseInt(index) + 1;
@@ -530,10 +529,10 @@ class GameView {
         }
         scoreboardTemplate += "</div>";
         this.$modalCardContent.classList.add("scoreboard-bg");
-        this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, [{
+        await this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, [{
             text: "Start a New Game",
             callback: () => {
-                window.location = `http://${window.location.host}/monopoly/join`;
+                window.location = `http://${window.location.host}/monopoly`;
             }
         }]);
     }
@@ -563,11 +562,12 @@ class GameView {
         this.socket.send(JSON.stringify({
             action: "end_game",
         }));
+        window.location = `http://${window.location.host}/monopoly`;
     }
 
     // async handleGameEnd() {
     //     await this.showModal(null, "Game Terminated by Host", "", "Navigating back...", [], 5);
-    //     window.location = `http://${window.location.host}/monopoly/join`;
+    //     window.location = `http://${window.location.host}/monopoly`;
     // }
 }
 
