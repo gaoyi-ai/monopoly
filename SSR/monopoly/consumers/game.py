@@ -1,10 +1,11 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from monopoly.consumers.util import games, rooms, decisions, build_add_err_msg, build_init_msg, change_handlers
+from monopoly.consumers.util import games, rooms, decisions, build_add_err_msg, build_init_msg, change_handlers, \
+    build_ready_msg
 from monopoly.core.move_receipt import ModalTitleType
 from monopoly.game_handlers.game_handler import get_building_type, handle_roll, handle_confirm_decision, \
-    handle_cancel_decision, handle_end_game, handle_chat
-
+    handle_cancel_decision, handle_end_game, handle_chat, handle_ready
+from monopoly.core.game import GameStateType
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,13 +18,16 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
         "cancel_decision": handle_cancel_decision,  # choose no
         "end_game": handle_end_game,
         "chat": handle_chat,
+        "ready": handle_ready
     }
 
     async def receive_json(self, content, **kwargs):
         player = self.scope['user']
         action = content['action']
-        logger.info(f'action: {action}')
-        if action != 'init':
+        logger.info(f'{player}: game - {action}')
+        if action == 'ready':
+            msg = build_ready_msg(handle_ready(h=self.game_id, player=player))
+        elif action != 'init':
             msg = await self.handler_mapping[action](h=self.game_id, gs=games, chs=change_handlers, message=content)
         else:
             if (self.game_id not in games) \
@@ -31,10 +35,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 msg = await build_add_err_msg()
                 return await self.send_json(msg)
             game = games[self.game_id]
+            if game.game_state != GameStateType.INITED:
+                return
+            game.game_state = GameStateType.WAIT_FOR_ROLL
 
             players = game.players
             profiles = rooms[self.game_id]  # get all players in the room
-
             cash_change = [player.money for player in players]
             pos_change = [player.position for player in players]
             landname = None

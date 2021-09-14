@@ -13,11 +13,11 @@ async def add_player(room_name, player_name):
     if room_name not in rooms:
         rooms[room_name] = set()
         rooms[room_name].add(room_name)
+    else:
+        rooms[room_name].add(player_name)
 
     if len(rooms[room_name]) > 4:
         return False
-
-    rooms[room_name].add(player_name)
     return True
 
 
@@ -28,10 +28,8 @@ def build_join_failed_msg():
 
 async def build_join_reply_msg(room_name):
     players = rooms[room_name]
-    logger.info(f'players: {players}')
     data = []
     for player in players:
-        logger.info(f'cur : {player}')
         user = await get_user(player)
         profile = await get_profile(user)
         avatar = profile.avatar.url if profile.avatar.name else ''
@@ -64,7 +62,6 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive_json(self, content, **kwargs):
         player = self.scope['user']
-        logger.info(f"player: {player.username}")
         action = content['action']
         logger.info(f"{player}: {action}")
         if action == 'join':
@@ -103,6 +100,7 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        # if rooms.get(self.room_name): rooms.pop(self.room_name)
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,

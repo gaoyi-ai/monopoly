@@ -17,6 +17,7 @@ class GameStateType:
     WAIT_FOR_ROLL = 0
     WAIT_FOR_DECISION = 1
     GAME_ENDED = 2
+    INITED = 3
 
 
 class Game:
@@ -28,7 +29,7 @@ class Game:
             self.notify_error("Error: Incorrect player number, should be 1-4 players.")
             return
         self.players = [Player(i) for i in range(player_num)]
-        self.game_state = GameStateType.WAIT_FOR_ROLL
+        self.game_state = GameStateType.INITED
         self._card_deck = CardDeck()
         self._board = Board()
         self._dice = Dice()
