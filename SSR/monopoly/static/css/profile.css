@@ -23,15 +23,15 @@
     margin-left: 10px;
 }
 
-#profile-user-avatar:before {
-    content: ' ';
-    display: block;
-    position: absolute;
-    height: 168px;
-    width: 168px;
-    background-size: 168px 168px;
-    background-image: url("../img/default_avatar.png");
-}
+/*#profile-user-avatar:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 168px;*/
+/*    width: 168px;*/
+/*    background-size: 168px 168px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
 
 #profile-header {
     margin-bottom: 40px;
