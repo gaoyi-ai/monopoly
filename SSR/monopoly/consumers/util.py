@@ -7,6 +7,7 @@ rooms = {}
 games = {}
 change_handlers = {}
 decisions = {}
+readys = {}
 
 
 @database_sync_to_async
@@ -24,11 +25,8 @@ async def build_init_msg(players, cash_change, pos_change, wait_decision, decisi
     players_list = []
     for player in players:
         user = await get_user(player)
-        # user = ''
         profile = await get_profile(user)
-        # profile = ''
-        # avatar = profile.avatar.url if profile else ""
-        avatar = ""
+        avatar = profile.avatar.url if profile.avatar.name else ""
         players_list.append({"fullName": user.username,
                              "userName": user.username,
                              "avatar": avatar})
@@ -117,4 +115,10 @@ def build_chat_msg(sender, content):
            "sender": sender,
            "content": content,
            }
+    return ret
+
+
+def build_ready_msg(ready_state):
+    ret = {"action": "ready",
+           "isReady": ready_state}
     return ret

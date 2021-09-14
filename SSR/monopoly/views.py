@@ -23,7 +23,7 @@ class JoinView(View):
         user = request.user
         host_name = kwargs.get('host_name', user.username)
         avatar = Profile.objects.get(user=user).avatar
-        avatar = avatar if avatar.name else ''
+        avatar = avatar.url if avatar.name else ''
 
         return render(request, 'join_view.html', {
             "user": {
@@ -45,6 +45,7 @@ class LoginView(View):
         })
 
     def post(self, request, *args, **kwargs):
+        next_redirect = request.GET.get('next', reverse('join'))
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
@@ -52,7 +53,7 @@ class LoginView(View):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect(reverse('join'))
+                return redirect(next_redirect)
             else:
                 res = {'active_page': 'login',
                        "error": "Inactive user."}
