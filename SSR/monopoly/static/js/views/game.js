@@ -6,7 +6,7 @@ class GameView {
         this.initComponents();
         this.audioManager = new AudioManager();
         this.audioManager.play("background");
-
+        this.readyPlayerState = false;
         this.gameInProcess = true;
     }
 
@@ -57,7 +57,6 @@ class GameView {
     }
 
     initBoard() {
-        console.log("initBoard start...")
         this.gameController = new GameController({
             // The DOM element in which the drawing will happen.
             containerEl: document.getElementById("game-container"),
@@ -80,18 +79,40 @@ class GameView {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         };
+        const readyMsg = {
+            'action': "ready"
+        };
+        const socket = this.socket;
 
+        socket.addEventListener('open', function () {
+            socket.send(JSON.stringify(readyMsg));
+        });
+
+        this.delay(this.wait2Init, this.readyPlayerState)
+    }
+
+    wait2Init = () => {
         if (this.hostName === this.userName) {
-            const socket = this.socket;
             const openMsg = {
                 'action': "init"
             };
             // Connection opened
-            socket.addEventListener('open', function (event) {
-                socket.send(JSON.stringify(openMsg));
-            });
+            // socket.addEventListener('open', function () {
+            this.socket.send(JSON.stringify(openMsg));
+            // });
         }
 
+    }
+
+    delay(callback, readyState) {
+        console.log(readyState)
+        if (readyState) {
+            callback();
+        } else {
+            setTimeout(() => {
+                this.delay(callback, this.readyPlayerState)
+            }, 500)
+        }
     }
 
     handleStatusChange(message) {
@@ -104,11 +125,16 @@ class GameView {
             "cancel_decision": this.handleCancel,
             "game_end": this.handleGameEnd,
             "chat": this.handleChat,
+            "ready": this.handleReady
         };
 
         if (!this.gameInProcess) return;
 
         messageHandlers[message.action].bind(this)(message);
+    }
+
+    handleReady(message) {
+        this.readyPlayerState = message.isReady;
     }
 
     onDiceRolled() {
@@ -127,39 +153,32 @@ class GameView {
     * */
     initGame(players, amount, posChange) {
         // Init players
-        console.log("players:" + players + "in initGame");
         this.initPlayers(players, posChange);
 
         // Init cash amount
-        console.log("changeCashAmount start...")
         this.changeCashAmount(amount);
     }
 
     /*
     * Display players on the top
     * players: [{
-    *   fullName: string, // user full name
+    *   fullName: string, // username
     *   userName: string, // username
     *   avatar: string // user avatar url
     * }]
     * */
     initPlayers(players, initPos) {
-        console.log("players :" + players);
-
         this.players = players;
         this.currentPlayer = null;
 
         for (let i = 0; i < players.length; i++) {
-            console.log("player :" + players[i]);
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
-            const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar.url}">`
-                : `<div class="user-group-name">${players[i].fullName.charAt(0)}</div>`;
+            const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar}">`
+                : `< div class = "user-group-name" >${players[i].userName.charAt(0)} < /div>`;
 
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
-                    <a href="/monopoly/profile/${players[i].userName}" target="_blank">
                         ${avatarTemplate}
-                    </a>
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
                         <div class="user-cash-num">1500</div>
@@ -179,7 +198,6 @@ class GameView {
     changeCashAmount(amounts) {
         for (let i in amounts) {
             const $cashAmount = document.querySelector(`#user-group-${i} > span > div.user-cash-num`);
-            console.log($cashAmount);
             $cashAmount.innerText = (amounts[i] >= 0) ? amounts[i] : 0;
         }
     }
@@ -522,7 +540,7 @@ class GameView {
                 <div class="scoreboard-row">
                     <span class="scoreboard-ranking">${rank}</span>
                     <img class="chat-message-avatar" src="${this.players[scoreList[index].playerIndex].avatar}">
-                    <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].fullName}</span>
+                    <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].userName}</span>
                     <div class="monopoly-cash">M</div>
                     <span class="scoreboard-score">${scoreList[index].score}</span>
                 </div>`;
@@ -562,7 +580,6 @@ class GameView {
         this.socket.send(JSON.stringify({
             action: "end_game",
         }));
-        window.location = `http://${window.location.host}/monopoly`;
     }
 
     // async handleGameEnd() {

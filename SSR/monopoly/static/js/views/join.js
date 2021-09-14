@@ -81,7 +81,6 @@ class JoinView {
     }
 
     handleStatusChange(message) {
-        console.log(message)
         if (message.action === "join") {
             this.addFriend(message.data);
 
@@ -100,7 +99,7 @@ class JoinView {
             this.$startGame.innerText = "Navigating back... Create your own game!";
             this.$newGameNotice.innerText = "4 Players Max Per Game!";
             this.$newGameNotice.style.color = "#F44336";
-            setTimeout(this.navigateBack, 2000);
+            setTimeout(this.navigateBack, 5000);
         }
     }
 
