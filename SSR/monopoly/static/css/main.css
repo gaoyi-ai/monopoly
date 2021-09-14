@@ -139,15 +139,15 @@ a {
     align-items: center;
 }
 
-#nav-profile:before {
-    content: ' ';
-    display: block;
-    position: absolute;
-    height: 32px;
-    width: 32px;
-    background-size: 32px 32px;
-    background-image: url("../img/default_avatar.png");
-}
+/*#nav-profile:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 32px;*/
+/*    width: 32px;*/
+/*    background-size: 32px 32px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
 
 .card-content-container {
     z-index: 100;

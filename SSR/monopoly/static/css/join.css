@@ -26,15 +26,15 @@
     position: absolute;
 }
 
-#user-avatar:before {
-    content: ' ';
-    display: block;
-    position: absolute;
-    height: 128px;
-    width: 128px;
-    background-size: 128px 128px;
-    background-image: url("../img/default_avatar.png");
-}
+/*#user-avatar:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 128px;*/
+/*    width: 128px;*/
+/*    background-size: 128px 128px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
 
 #joined-users-container {
     display: flex;
@@ -53,15 +53,15 @@
     position: relative;
 }
 
-.joined-user-avatar::before {
-    content: ' ';
-    display: block;
-    position: absolute;
-    height: 64px;
-    width: 64px;
-    background-size: 64px 64px;
-    background-image: url("../img/default_avatar.png");
-}
+/*.joined-user-avatar::before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 64px;*/
+/*    width: 64px;*/
+/*    background-size: 64px 64px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
 
 #start-game {
     margin: 20px 0;
