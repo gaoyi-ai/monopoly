@@ -174,7 +174,7 @@ class GameView {
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
             const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar}">`
-                : `< div class = "user-group-name" >${players[i].userName.charAt(0)} < /div>`;
+                : `<div class="user-group-name">${players[i].userName.charAt(0)}</div>`;
 
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
@@ -536,10 +536,14 @@ class GameView {
         let scoreboardTemplate = `<div id="scoreboard">`;
         for (let index in scoreList) {
             let rank = parseInt(index) + 1;
+            let avatar  =this.players[scoreList[index].playerIndex].avatar
+            if (avatar.indexOf("media") === -1){
+                avatar = "/media/default_avatar.png"
+            }
             scoreboardTemplate += `
                 <div class="scoreboard-row">
                     <span class="scoreboard-ranking">${rank}</span>
-                    <img class="chat-message-avatar" src="${this.players[scoreList[index].playerIndex].avatar}">
+                    <img class="chat-message-avatar" src="${avatar}">
                     <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].userName}</span>
                     <div class="monopoly-cash">M</div>
                     <span class="scoreboard-score">${scoreList[index].score}</span>
@@ -581,11 +585,6 @@ class GameView {
             action: "end_game",
         }));
     }
-
-    // async handleGameEnd() {
-    //     await this.showModal(null, "Game Terminated by Host", "", "Navigating back...", [], 5);
-    //     window.location = `http://${window.location.host}/monopoly`;
-    // }
 }
 
 window.onload = () => {
