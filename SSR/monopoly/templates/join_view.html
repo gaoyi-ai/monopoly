@@ -18,12 +18,12 @@
         </div>
         <div class="card-content-container">
             <a href="{% url 'profile' user.name %}" target="_blank">
-                <img id="user-avatar" src="{{ avatar.url }}">
+                <img id="user-avatar" src="{{ user.avatar }}">
             </a>
             <span id="new-game-notice">New Game!</span>
             <div id="joined-users-container">
                 <a href="{% url 'profile' user.name %}" target="_blank">
-                    <img class="joined-user-avatar" src="{{ avatar.url }}" title="{{ user.name }}">
+                    <img class="joined-user-avatar" src="{{ user.avatar }}" title="{{ user.name }}">
                 </a>
             </div>
             <button id="start-game" class="large-button" disabled>
