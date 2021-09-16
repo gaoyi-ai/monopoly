@@ -1,0 +1,39 @@
+# the upstream component nginx needs to connect to
+upstream project {
+    server      127.0.0.1:8070;
+}
+
+# Monopoly server configuration
+#
+server {
+	listen 80;
+	# listen [::]:80 default_server;
+
+	server_name 127.0.0.1;
+    access_log   off;
+    error_log    /home/pi/monopoly/SSR/logs/nginx_error.log;
+
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ =404;
+		include /etc/nginx/uwsgi_params;
+		uwsgi_pass 127.0.0.1:8070;
+        uwsgi_param UWSGI_PYHOME /home/pi/monopoly/SSR/venv;
+        uwsgi_param UWSGI_CHDIR /home/pi/monopoly/SSR;
+        uwsgi_param UWSGI_SCRIPT project.wsgi:application;
+        #proxy_http_version  1.1;
+        #proxy_set_header    Upgrade $http_upgrade;
+        #proxy_set_header    Connection "upgrade";
+        #proxy_redirect      off;
+	}
+
+	location /static/ {
+		alias /home/pi/monopoly/SSR/static/;
+	}   
+
+    location /media/ {
+        alias /home/pi/monopoly/SSR/media/;
+    }
+}
+
