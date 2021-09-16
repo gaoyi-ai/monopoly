@@ -14,6 +14,40 @@
 2. `bash setup.sh` or `sudo bash setup.sh`
 3. open [127.0.0.1:8000/monopoly/](127.0.0.1:8000/monopoly/) in your browser.
 
+
+## How to run CSR
+1. Just assume you don't have any thing about React on your computer.
+
+   - Download and install Node.js from this site:
+
+     [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
+
+     After installing Node.js, open a Terminal, Windows Powersheel or Comandline, use the following 2 commands to check your installation:
+
+     ```
+     node -v
+     npm -v
+     ```
+
+     This should return node.js and npm version for you.
+
+     *If you are in China mainland, better change your cource into Taobao mirrror:*
+
+     ```
+     npm install -g cnpm --registry=https://registry.npm.taobao.org
+     npm config set registry https://registry.npm.taobao.org
+     ```
+
+   - Install react using cnpm.
+
+     ```
+     cnpm install -g create-react-app
+     ```
+
+2. Use `cd CSR` to open React frontend's working directory.
+
+3. Execute `yarn start` into Comandline or Terminal and wait. Browser will aotumaticlly open and display a login page. Use `admin` and `123456` as account and password to sign in.
+
 ### NOTE
 
 1. The `setup.sh` script works in Linux, and if your OS is Windows, you can use WSL or use git bash.
