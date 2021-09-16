@@ -1,0 +1,31 @@
+.playerStateBar {
+    height: fit-content;
+    padding:2px;
+    background-color: yellow;
+    border-radius: 25px;
+    border-top:3px;
+    border-style: solid;
+    border-color: red;
+    margin: 0.1em 0.5em;
+    
+}
+
+.usernameInitial {
+    background-color: white;
+    margin-right: -20px;
+    font-size: 1.5em;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 20px;
+}
+
+.playerStateBar img{
+    width: 25px;
+    position: relative;
+    top: 15px;
+    left: -25px;
+}
+
+.cash{
+    font-size: 1.5em;
+}

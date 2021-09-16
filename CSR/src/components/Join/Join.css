@@ -1,0 +1,86 @@
+.join {
+    margin: 0 auto ;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-image: url('./../../assets/img/background.jpg');
+    /* background-color: aqua; */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.host_avatar{
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    position: absolute;
+    top: 60px;
+    z-index: 10;
+}
+
+.pannel{
+    height: 550px;
+    width: 500px;
+    position: relative;
+    top: 120px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+.pannel h2{
+    color:rgb(9,131,247);
+}
+.players {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+.players img{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.waitHint{
+    border-radius: 10px;
+    padding: 5px 20px;
+    color: white;
+    background-color: rgb(128,139,159);
+}
+
+.avatarHint{
+    color: white;
+    background-color: rgb(237,83,36);
+    border-radius: 10px;
+    padding: 5px 20px;
+}
+
+.inviteHint{
+    color:rgb(90,90,90);
+}
+
+.pannel input{
+    width: 350px;
+    margin: 0 1em;
+}
+
+.inlineButton{
+    color: white;
+    background-color: rgb(9,131,247);
+    padding: 3px 10px;
+    border-radius: 5px;
+}
+
+.startGame{
+    background-color: rgb(9,131,247);
+    color: white;
+    padding: 10px 100px;
+    border-radius: 10px;
+    border-style: none;
+    font-size: large;
+}
+.startGame:hover{
+    background-color: rgb(142,195,245);
+}

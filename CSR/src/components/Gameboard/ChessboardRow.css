@@ -1,0 +1,8 @@
+.chessboardUnit{
+    width: 60px;
+    height: 60px;
+}
+
+.chessboardRow{
+    display:flex;
+}

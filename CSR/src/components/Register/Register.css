@@ -1,0 +1,11 @@
+.bigButton{
+    background-color: rgb(9,131,247);
+    color: white;
+    padding: 10px 100px;
+    border-radius: 10px;
+    border-style: none;
+    font-size: large;
+}
+.bigButton:hover{
+    background-color: rgb(142,195,245);
+}
