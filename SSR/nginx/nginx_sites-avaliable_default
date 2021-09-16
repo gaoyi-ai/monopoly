@@ -11,7 +11,7 @@ server {
 
 	server_name 127.0.0.1;
     access_log   off;
-    error_log    /home/pi/monopoly/SSR/logs/nginx_error.log;
+    error_log    /home/admin/monopoly/SSR/logs/nginx_error.log;
 
 	location / {
 		# First attempt to serve request as file, then
@@ -19,8 +19,8 @@ server {
 		try_files $uri $uri/ =404;
 		include /etc/nginx/uwsgi_params;
 		uwsgi_pass 127.0.0.1:8070;
-        uwsgi_param UWSGI_PYHOME /home/pi/monopoly/SSR/venv;
-        uwsgi_param UWSGI_CHDIR /home/pi/monopoly/SSR;
+        uwsgi_param UWSGI_PYHOME /home/admin/monopoly/SSR/venv;
+        uwsgi_param UWSGI_CHDIR /home/admin/monopoly/SSR;
         uwsgi_param UWSGI_SCRIPT project.wsgi:application;
         #proxy_http_version  1.1;
         #proxy_set_header    Upgrade $http_upgrade;
@@ -29,11 +29,11 @@ server {
 	}
 
 	location /static/ {
-		alias /home/pi/monopoly/SSR/static/;
+		alias /home/admin/monopoly/SSR/static/;
 	}   
 
     location /media/ {
-        alias /home/pi/monopoly/SSR/media/;
+        alias /home/admin/monopoly/SSR/media/;
     }
 }
 
