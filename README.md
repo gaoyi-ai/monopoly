@@ -14,6 +14,9 @@
 2. `bash setup.sh` or `sudo bash setup.sh`
 3. open [127.0.0.1:8000/monopoly/](127.0.0.1:8000/monopoly/) in your browser.
 
+## Use webpages provided by AWS services
+Open [3.18.221.239:8000/monopoly/](3.18.221.239:8000/monopoly/) in your browser.
+
 ### NOTE
 
 1. The `setup.sh` script works in Linux, and if your OS is Windows, you can use WSL or use git bash.
