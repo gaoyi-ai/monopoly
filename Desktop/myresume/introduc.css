@@ -1,0 +1,98 @@
+
+footer, hgroup,
+section{
+   display: block;
+}
+
+
+/* Set the default page element styles */
+
+body * {
+   font-size: 100%;
+   font-weight: inherit;
+   line-height: 1.2em;
+   list-style: none;
+   margin: 0px;
+   padding: 0px;
+   text-decoration: none;
+   vertical-align: baseline;
+}
+
+
+
+/* Body Styles */
+body {
+   padding-left: 30px;
+   padding-right: 30px;
+   background: rgb(247, 247, 247) url(rfback.png) top left no-repeat;
+   width: 95%;
+   min-width: 1000px;
+   max-width: 1200px;
+   font-weight: normal;
+   margin: 0px auto;
+}
+
+div>nav{
+   width: 100%;
+}
+
+div>nav li {
+   width: 33%;
+   float: left;
+   text-align: center;
+   line-height: 30px;
+   background-color: rgb(102, 102, 102);
+}
+
+div>nav li a{
+   text-decoration: none;
+   font-size: 1em;
+   color:white;
+}  
+
+h1{
+   padding-top: 50px;
+    color: black;
+    font-weight: bolder;
+    font-size: xx-large;
+}
+section#main nav li{
+   list-style-type: square;
+}
+div{
+   display: flex;
+   justify-content: space-between;
+}
+div>div.as{
+   display:flex-end;
+   flex-direction: column;
+}
+div.firas{
+
+   margin-left: 400px;
+   margin-top: 30px; 
+   width:50%;
+   background-color: gray;
+   border-radius: 25px;
+   opacity: 0.7;
+   color:black;
+}
+div.secas{
+   margin-left: 400px;
+   margin-top: 30px; 
+   width:50%;
+   background-color: gray;
+   border-radius: 25px;
+   opacity: 0.7;
+   color:black;
+}
+aside{
+   padding:10px 10px 10px 10px;
+}
+aside>h2{
+   font-weight: bolder;
+}
+aside>nav>li{
+   list-style-type: square;
+}
+

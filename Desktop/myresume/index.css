@@ -1,0 +1,106 @@
+
+
+
+header>h1{
+   padding-top: 30px;
+   font-size: large;
+   font-weight: bolder;
+   color:black;
+}
+
+/* Set the default page element styles */
+
+body * {
+   font-family: Verdana, Geneva, sans-serif;
+   font-size: 100%;
+   font-weight: inherit;
+   line-height: 1.2em;
+   list-style: none;
+   margin: 0px;
+   padding: 0px;
+   text-decoration: none;
+   vertical-align: baseline;
+}
+
+
+
+/* Body Styles */
+body {
+   background: rgb(247, 247, 247) url(rfback.png) top left no-repeat;
+   width: 95%;
+   min-width: 1000px;
+   max-width: 1200px;
+   font-family: Verdana, Geneva, sans-serif;
+   font-weight: normal;
+   margin: 0px auto;
+}
+
+nav {
+   width: 100%;
+}
+
+nav li {
+   width: 33%;
+   float: left;
+   text-align: center;
+   line-height: 30px;
+   background-color: rgb(102, 102, 102);
+}
+
+nav li a {
+   text-decoration: none;
+   font-size: 1em;
+   color:white;
+}  
+
+
+header {
+   border-bottom: 1px solid black;
+   clear: both;
+   text-align: right;
+   height: 100px;
+}
+
+
+section#main {
+   display: flex;
+   flex-direction: row;
+   float: left;
+   width: 90%;
+   margin-top: 20px;
+   margin-left: 50px;
+}
+img#self{
+   padding-top: 30px;
+   padding-left: 100px;
+}
+
+section p {
+   margin: 0px 0px 20px 0px;
+}
+
+
+section.honor {
+   
+   width: 45%;
+   clear: none;
+   float: left;
+   padding-left: 10px;
+}
+
+section.honor h2 {
+   font-size: 1.4em;
+   letter-spacing: 7px;
+   font-weight: bolder;
+   margin-bottom: 10px;
+}
+
+
+section.honor:first-of-type {
+   border-right: 1px solid black;
+}
+div{
+   display: flex;
+   flex-direction: column ;
+}
+ 
