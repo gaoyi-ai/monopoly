@@ -97,9 +97,12 @@ def build_construct_msg(curr_cash, tile_id, build_type, next_player):
     return ret
 
 
-def build_cancel_decision_msg(next_player):
+def build_cancel_decision_msg(cur_player, next_player,
+                              msg="pass"):
     ret = {"action": "cancel_decision",
-           "next_player": next_player}
+           "cur_player": cur_player,
+           "next_player": next_player,
+           "msg": msg}
     return ret
 
 

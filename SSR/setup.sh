@@ -19,7 +19,7 @@ python3 -m pip install -r requirements.txt
 echo -e "Django Version: "
 python3 -m django --version
 # Config local env settings
-export DJANGO_SETTINGS_MODULE=project.settings.pro
+export DJANGO_SETTINGS_MODULE=project.settings.local
 python3 manage.py check
 python3 manage.py makemigrations
 python3 manage.py makemigrations monopoly

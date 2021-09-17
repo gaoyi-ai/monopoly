@@ -318,7 +318,6 @@ class GameView {
     }
 
     async handleInit(message) {
-        console.log("handleInit " + message);
         let players = message.players;
         let changeCash = message.changeCash;
         let nextPlayer = message.nextPlayer;
@@ -381,7 +380,7 @@ class GameView {
         let landname = message.landname;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, this.players[currPlayer].userName + " got " + steps.toString(), "", "", [], 2);
+        await this.showModal(currPlayer, rollResMsg, "", "", [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
@@ -445,9 +444,12 @@ class GameView {
         this.audioManager.play("build");
     }
 
-    handleCancel(message) {
-        let next_player = message.next_player;
-        this.changePlayer(next_player, this.onDiceRolled.bind(this));
+    async handleCancel(message) {
+        const {cur_player, next_player, msg} = message
+        await this.showModal(cur_player, "Decision Canceled", this.players[cur_player].userName, msg, [], 3)
+            .then(
+                () => this.changePlayer(next_player, this.onDiceRolled.bind(this))
+            )
     }
 
     async handleGameEnd(message) {
@@ -498,7 +500,7 @@ class GameView {
             action: "cancel_decision",
             hostname: this.hostName,
         }));
-        await this.hideModal(true);
+        // await this.hideModal(true);
     }
 
     /*
@@ -536,8 +538,8 @@ class GameView {
         let scoreboardTemplate = `<div id="scoreboard">`;
         for (let index in scoreList) {
             let rank = parseInt(index) + 1;
-            let avatar  =this.players[scoreList[index].playerIndex].avatar
-            if (avatar.indexOf("media") === -1){
+            let avatar = this.players[scoreList[index].playerIndex].avatar
+            if (avatar.indexOf("media") === -1) {
                 avatar = "/media/default_avatar.png"
             }
             scoreboardTemplate += `

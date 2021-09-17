@@ -17,3 +17,5 @@ migrations/
 media/
 
 _trial_temp/
+
+*.pem
