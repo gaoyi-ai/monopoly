@@ -113,7 +113,6 @@ class GameView {
             }, 500)
         }
     }
-
     handleStatusChange(message) {
         const messageHandlers = {
             "init": this.handleInit,
