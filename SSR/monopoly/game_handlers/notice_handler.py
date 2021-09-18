@@ -16,20 +16,20 @@ class NoticeHandler(MonopolyHandler):
         logger.info('bypass start point')
 
     def on_error(self, err_msg):
-        logger.info(f"Sorry. error: {err_msg}")
+        logger.info(f"[Error] {err_msg}")
 
     def on_rolled(self):
         logger.info(f'[Info] the player {self.game.cur_player.index} is rolling')
 
     def on_decision_made(self, mr):
-        logger.info('[Info] Decision is made, the decision is')
+        logger.info(f'[Info] Decision is made, the decision is {mr}')
 
     def on_new_game(self):
-        logger.info('it is the start of the game')
+        logger.info(f'game {self.game.game_id} start')
 
     def on_game_ended(self):
         self.game_end = True
-        logger.info('this is the end of the game')
+        logger.info(f'game {self.game.game_id} end')
 
     def on_player_changed(self):
         pass
