@@ -105,7 +105,6 @@ class GameView {
     }
 
     delay(callback, readyState) {
-        console.log(readyState)
         if (readyState) {
             callback();
         } else {
@@ -447,9 +446,7 @@ class GameView {
     async handleCancel(message) {
         const {cur_player, next_player, msg} = message
         await this.showModal(cur_player, "Decision Canceled", this.players[cur_player].userName, msg, [], 3)
-            .then(
-                () => this.changePlayer(next_player, this.onDiceRolled.bind(this))
-            )
+        this.changePlayer(next_player, this.onDiceRolled.bind(this))
     }
 
     async handleGameEnd(message) {
