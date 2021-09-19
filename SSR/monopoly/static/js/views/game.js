@@ -6,7 +6,7 @@ class GameView {
         this.initComponents();
         this.audioManager = new AudioManager();
         this.audioManager.play("background");
-
+        this.readyPlayerState = false;
         this.gameInProcess = true;
     }
 
@@ -57,7 +57,6 @@ class GameView {
     }
 
     initBoard() {
-        console.log("initBoard start...")
         this.gameController = new GameController({
             // The DOM element in which the drawing will happen.
             containerEl: document.getElementById("game-container"),
@@ -80,20 +79,40 @@ class GameView {
             const message = JSON.parse(event.data);
             this.handleStatusChange(message);
         };
+        const readyMsg = {
+            'action': "ready"
+        };
+        const socket = this.socket;
 
+        socket.addEventListener('open', function () {
+            socket.send(JSON.stringify(readyMsg));
+        });
+
+        this.delay(this.wait2Init, this.readyPlayerState)
+    }
+
+    wait2Init = () => {
         if (this.hostName === this.userName) {
-            const socket = this.socket;
             const openMsg = {
                 'action': "init"
             };
             // Connection opened
-            socket.addEventListener('open', function (event) {
-                socket.send(JSON.stringify(openMsg));
-            });
+            // socket.addEventListener('open', function () {
+            this.socket.send(JSON.stringify(openMsg));
+            // });
         }
 
     }
 
+    delay(callback, readyState) {
+        if (readyState) {
+            callback();
+        } else {
+            setTimeout(() => {
+                this.delay(callback, this.readyPlayerState)
+            }, 500)
+        }
+    }
     handleStatusChange(message) {
         const messageHandlers = {
             "init": this.handleInit,
@@ -104,11 +123,16 @@ class GameView {
             "cancel_decision": this.handleCancel,
             "game_end": this.handleGameEnd,
             "chat": this.handleChat,
+            "ready": this.handleReady
         };
 
         if (!this.gameInProcess) return;
 
         messageHandlers[message.action].bind(this)(message);
+    }
+
+    handleReady(message) {
+        this.readyPlayerState = message.isReady;
     }
 
     onDiceRolled() {
@@ -127,46 +151,38 @@ class GameView {
     * */
     initGame(players, amount, posChange) {
         // Init players
-        console.log("players:" + players + "in initGame");
         this.initPlayers(players, posChange);
 
         // Init cash amount
-        console.log("changeCashAmount start...")
         this.changeCashAmount(amount);
     }
 
     /*
     * Display players on the top
     * players: [{
-    *   fullName: string, // user full name
+    *   fullName: string, // username
     *   userName: string, // username
     *   avatar: string // user avatar url
     * }]
     * */
     initPlayers(players, initPos) {
-        console.log("players :" + players);
-
         this.players = players;
         this.currentPlayer = null;
 
         for (let i = 0; i < players.length; i++) {
-            console.log("player :" + players[i]);
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
-            const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar.url}">`
-                : `<div class="user-group-name">${players[i].fullName.charAt(0)}</div>`;
+            const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar}">`
+                : `<div class="user-group-name">${players[i].userName.charAt(0)}</div>`;
 
             this.$usersContainer.innerHTML += `
                 <div id="user-group-${i}" class="user-group" style="background: ${GameView.PLAYERS_COLORS[i]}">
-                    <a href="/monopoly/profile/${players[i].userName}" target="_blank">
                         ${avatarTemplate}
-                    </a>
                     <span class="user-cash">
                         <div class="monopoly-cash">M</div>
                         <div class="user-cash-num">1500</div>
                     </span>
                     <img class="user-role" src="/static/img/player_${i}.png">
                 </div>`;
-            console.log(this.$usersContainer.innerHTML);
         }
 
 
@@ -180,7 +196,6 @@ class GameView {
     changeCashAmount(amounts) {
         for (let i in amounts) {
             const $cashAmount = document.querySelector(`#user-group-${i} > span > div.user-cash-num`);
-            console.log($cashAmount);
             $cashAmount.innerText = (amounts[i] >= 0) ? amounts[i] : 0;
         }
     }
@@ -230,7 +245,7 @@ class GameView {
     * }],
     * displayTime: int // seconds to display
     * */
-    showModal(playerIndex, title, subTitle, message, buttons, displayTime) {
+    async showModal(playerIndex, title, subTitle, message, buttons, displayTime) {
         return new Promise(resolve => {
             if (playerIndex === null) {
                 this.$modalAvatar.src = GameView.DEFAULT_AVATAR;
@@ -301,7 +316,6 @@ class GameView {
     }
 
     async handleInit(message) {
-        console.log("handleInit " + message);
         let players = message.players;
         let changeCash = message.changeCash;
         let nextPlayer = message.nextPlayer;
@@ -350,7 +364,7 @@ class GameView {
 
     async handleAddErr() {
         await this.showModal(null, "Permission Denied", "Game Not Found", "Navigating back... Create your own game with your friends!", [], 5);
-        window.location = `http://${window.location.host}/monopoly/join`;
+        window.location = `http://${window.location.host}/monopoly`;
     }
 
 
@@ -364,7 +378,7 @@ class GameView {
         let landname = message.landname;
         let rollResMsg = this.players[currPlayer].userName + " gets a roll result " + steps.toString();
 
-        await this.showModal(currPlayer, this.players[currPlayer].userName + " got " + steps.toString(), "", "", [], 2);
+        await this.showModal(currPlayer, rollResMsg, "", "", [], 2);
 
         await this.gameController.movePlayer(currPlayer, newPos);
 
@@ -428,9 +442,10 @@ class GameView {
         this.audioManager.play("build");
     }
 
-    handleCancel(message) {
-        let next_player = message.next_player;
-        this.changePlayer(next_player, this.onDiceRolled.bind(this));
+    async handleCancel(message) {
+        const {cur_player, next_player, msg} = message
+        await this.showModal(cur_player, "Decision Canceled", this.players[cur_player].userName, msg, [], 3)
+        this.changePlayer(next_player, this.onDiceRolled.bind(this))
     }
 
     async handleGameEnd(message) {
@@ -457,7 +472,7 @@ class GameView {
             });
             all_asset.splice(big_index, 1, null);
         }
-        this.showScoreboard(result);
+        await this.showScoreboard(result);
     }
 
     handleChat(message) {
@@ -481,7 +496,7 @@ class GameView {
             action: "cancel_decision",
             hostname: this.hostName,
         }));
-        await this.hideModal(true);
+        // await this.hideModal(true);
     }
 
     /*
@@ -515,25 +530,29 @@ class GameView {
     *   score: int
     * }]
     * */
-    showScoreboard(scoreList) {
+    async showScoreboard(scoreList) {
         let scoreboardTemplate = `<div id="scoreboard">`;
         for (let index in scoreList) {
             let rank = parseInt(index) + 1;
+            let avatar = this.players[scoreList[index].playerIndex].avatar
+            if (avatar.indexOf("media") === -1) {
+                avatar = "/media/default_avatar.png"
+            }
             scoreboardTemplate += `
                 <div class="scoreboard-row">
                     <span class="scoreboard-ranking">${rank}</span>
-                    <img class="chat-message-avatar" src="${this.players[scoreList[index].playerIndex].avatar}">
-                    <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].fullName}</span>
+                    <img class="chat-message-avatar" src="${avatar}">
+                    <span class="scoreboard-username">${this.players[scoreList[index].playerIndex].userName}</span>
                     <div class="monopoly-cash">M</div>
                     <span class="scoreboard-score">${scoreList[index].score}</span>
                 </div>`;
         }
         scoreboardTemplate += "</div>";
         this.$modalCardContent.classList.add("scoreboard-bg");
-        this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, [{
+        await this.showModal(null, "Scoreboard", "Good Game!", scoreboardTemplate, [{
             text: "Start a New Game",
             callback: () => {
-                window.location = `http://${window.location.host}/monopoly/join`;
+                window.location = `http://${window.location.host}/monopoly`;
             }
         }]);
     }
@@ -564,11 +583,6 @@ class GameView {
             action: "end_game",
         }));
     }
-
-    // async handleGameEnd() {
-    //     await this.showModal(null, "Game Terminated by Host", "", "Navigating back...", [], 5);
-    //     window.location = `http://${window.location.host}/monopoly/join`;
-    // }
 }
 
 window.onload = () => {

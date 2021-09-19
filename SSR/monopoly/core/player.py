@@ -19,7 +19,8 @@ class Player:
         ret = self.money
         for land in self.properties:
             ret += land.evaluate()
-        return ret
+        return self.money
+        # return ret
 
     def remove_property(self, building):
         self.properties.remove(building)

@@ -30,27 +30,27 @@ class DebugLogHandler(MonopolyHandler):
         self.game = g
 
     def on_error(self, err_msg):
-        print(f'[Error] [Game ID: {self.game.game_id}] [Msg: {err_msg}]')
+        print(f'DebugLogHandler [Error] [Game ID: {self.game.game_id}] [Msg: {err_msg}]')
 
     def on_rolled(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: current player {self.game.cur_player.index} is rolling]')
+        print(f'DebugLogHandler [Info] [Game ID: {self.game.game_id}] [Msg: current player {self.game.cur_player.index} is rolling]')
 
     def on_decision_made(self, mr):
-        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Decision {mr} is made]')
+        print(f'DebugLogHandler [Info] [Game ID: {self.game.game_id}] [Msg: Decision {mr} is made]')
 
     def on_new_game(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Game Started]')
+        print(f'DebugLogHandler [Info] [Game ID: {self.game.game_id}] [Msg: Game Started]')
 
     def on_game_ended(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Game Ended]')
-        print(f'[Info] [Msg: The player {self.game.cur_player.index} has go bankruptcy]')
+        print(f'DebugLogHandler [Info] [Game ID: {self.game.game_id}] [Msg: Game Ended]')
+        print(f'DebugLogHandler [Info] [Msg: The player {self.game.cur_player.index} has go bankruptcy]')
 
     def on_player_changed(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] [Msg: Player changed to : {self.game.cur_player.index}]')
+        print(f'DebugLogHandler [Info] [Game ID: {self.game.game_id}] [Msg: Player changed to : {self.game.cur_player.index}]')
 
     def on_receipt_applied(self, mr):
-        print(f"[Info] [Game ID: {self.game.game_id}] [Msg: Player {self.game.cur_player}'s move result {mr} applied]")
+        print(f"DebugLogHandler [Info] [Game ID: {self.game.game_id}] [Msg: Player {self.game.cur_player}'s move result {mr} applied]")
 
     def on_pass_start(self):
-        print(f'[Info] [Game ID: {self.game.game_id}] '
+        print(f'DebugLogHandler [Info] [Game ID: {self.game.game_id}] '
               f'[Msg:  Player {self.game.cur_player.index} just passed the start point]')

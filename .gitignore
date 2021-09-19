@@ -15,3 +15,7 @@ node_modules/
 migrations/
 
 media/
+
+_trial_temp/
+
+*.pem

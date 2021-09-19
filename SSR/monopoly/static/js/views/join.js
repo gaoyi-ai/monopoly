@@ -22,6 +22,9 @@ class JoinView {
         this.userName = document.getElementById("user-name").value;
         this.hostName = document.getElementById("host-name").value;
         this.avatar = document.getElementById("user-avatar").getAttribute("src")
+        if (this.avatar.indexOf("media") === -1) {
+            document.getElementById("user-avatar").src = "/media/default_avatar.png"
+        }
         this.friends = [this.userName];
 
         this.initComponents();
@@ -47,7 +50,7 @@ class JoinView {
             })
         }
 
-        const isProfileInited = document.getElementById("user-avatar").getAttribute("src").length !== 0;
+        const isProfileInited = this.avatar.length !== 0;
         if (!isProfileInited) {
             const $addProfileButton = document.getElementById("init-profile");
             $addProfileButton.classList.remove("hidden");
@@ -81,7 +84,6 @@ class JoinView {
     }
 
     handleStatusChange(message) {
-        console.log(message)
         if (message.action === "join") {
             this.addFriend(message.data);
 
@@ -100,7 +102,7 @@ class JoinView {
             this.$startGame.innerText = "Navigating back... Create your own game!";
             this.$newGameNotice.innerText = "4 Players Max Per Game!";
             this.$newGameNotice.style.color = "#F44336";
-            setTimeout(this.navigateBack, 2000);
+            setTimeout(this.navigateBack, 5000);
         }
     }
 
@@ -109,6 +111,9 @@ class JoinView {
             if (this.friends.indexOf(friend.name) !== -1 || friend.name === this.userName) continue;
 
             this.friends.push(friend.name);
+            if (friend.avatar.indexOf("media") === -1) {
+                friend.avatar = "/media/default_avatar.png"
+            }
 
             this.$usersContainer.innerHTML += `
                 <a href="/monopoly/profile/${friend.name}" target="_blank">
@@ -129,7 +134,7 @@ class JoinView {
     }
 
     navigateBack() {
-        window.location = `http://${window.location.host}/monopoly/join`;
+        window.location = `http://${window.location.host}/monopoly`;
     }
 
     copyToClipboard() {

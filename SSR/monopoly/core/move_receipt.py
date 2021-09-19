@@ -94,7 +94,7 @@ class MoveReceipt:
     def apply_buy(self, player: Player):
         purchasable: Optional[Constructable, Infrastructure] = self.land.content
         purchasable.owner = player
-        player.add_property(purchasable)
+        player.add_property(self.land)
         player.deduct_money(self.value)
         return True
 

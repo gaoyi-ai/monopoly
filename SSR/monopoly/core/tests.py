@@ -14,6 +14,7 @@ class GameTestCase(unittest.TestCase):
 
     def setUp(self):
         self.game = Game(2)  # default 2 players
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         self.player_index = 0
         self.move_receipt = None
 
@@ -129,6 +130,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_construct_house(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         player = self.game.cur_player
         move_receipt: MoveReceipt
         steps, move_receipt = self.game.roll(3)
@@ -180,6 +182,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_parking(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         # round1
         move_receipt: MoveReceipt
         steps, move_receipt = self.game.roll(20)
@@ -195,6 +198,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_bypass_on_start(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         # round1
         player = self.game.cur_player
         move_receipt: MoveReceipt
@@ -205,6 +209,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_hotel(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         # round1
         player = self.game.cur_player
         move_receipt: MoveReceipt
@@ -259,6 +264,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_no_enough_money_to_buy(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         player = self.game.cur_player
         player.money = 1
         move_receipt: MoveReceipt
@@ -270,6 +276,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_no_enough_money_to_construct_building(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         # round1
         player = self.game.cur_player
         player.money = 70
@@ -290,6 +297,7 @@ class GameTestCase(unittest.TestCase):
 
     def test_arrive_second_time_to_infrastructure(self):
         self.game = Game(1)
+        self.game.game_state = GameStateType.WAIT_FOR_ROLL
         # round1
         player = self.game.cur_player
         move_receipt: MoveReceipt

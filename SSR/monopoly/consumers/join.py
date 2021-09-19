@@ -4,21 +4,6 @@ from monopoly.consumers.util import rooms, games, change_handlers, get_user, get
 from monopoly.core.game import Game
 from monopoly.game_handlers.notice_handler import NoticeHandler
 
-# "{'type': 'websocket', 'path': '/ws/join/gaoyi/', 'raw_path': b'/ws/join/gaoyi/', 'headers': [(b'host', " \
-# "b'127.0.0.1:8000'), (b'user-agent', b'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 " \
-# "Firefox/90.0'), (b'accept', b'*/*'), (b'accept-language', b'zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5," \
-# "en-US;q=0.3,en;q=0.2'), (b'accept-encoding', b'gzip, deflate'), (b'sec-websocket-version', b'13'), " \
-# "(b'origin', b'http://127.0.0.1:8000'), (b'sec-websocket-extensions', b'permessage-deflate'), " \
-# "(b'sec-websocket-key', b'9yWLU2epLrYro5zc5LduKQ=='), (b'connection', b'keep-alive, Upgrade'), (b'cookie', " \
-# "b'csrftoken=ditypApnmVtP06QGzIYNExt87FNr1O5UxWjK8qb5pXAYGHqNwJYnQvFjKALL77Bd; " \
-# "sessionid=7hz4ojsyrf77c2g8g85ak04y3u8d5bd8'), (b'sec-fetch-dest', b'websocket'), (b'sec-fetch-mode', " \
-# "b'websocket'), (b'sec-fetch-site', b'same-origin'), (b'pragma', b'no-cache'), (b'cache-control', " \
-# "b'no-cache'), (b'upgrade', b'websocket')], 'query_string': b'', 'client': ['127.0.0.1', 55001], 'server': [" \
-# "'127.0.0.1', 8000], 'subprotocols': [], 'asgi': {'version': '3.0'}, 'cookies': {'csrftoken': " \
-# "'ditypApnmVtP06QGzIYNExt87FNr1O5UxWjK8qb5pXAYGHqNwJYnQvFjKALL77Bd', 'sessionid': " \
-# "'7hz4ojsyrf77c2g8g85ak04y3u8d5bd8'}, 'session': <django.utils.functional.LazyObject object at " \
-# "0x000002D74A939280>, 'user': <channels.auth.UserLazyObject object at 0x000002D74A9392B0>, 'path_remaining': " \
-# "'', 'url_route': {'args': (), 'kwargs': {'room_name': 'gaoyi'}}} "
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,11 +13,11 @@ async def add_player(room_name, player_name):
     if room_name not in rooms:
         rooms[room_name] = set()
         rooms[room_name].add(room_name)
+    else:
+        rooms[room_name].add(player_name)
 
-    if len(rooms[room_name]) >= 4:
+    if len(rooms[room_name]) > 4:
         return False
-
-    rooms[room_name].add(player_name)
     return True
 
 
@@ -43,10 +28,8 @@ def build_join_failed_msg():
 
 async def build_join_reply_msg(room_name):
     players = rooms[room_name]
-    logger.info(f'players: {players}')
     data = []
     for player in players:
-        logger.info(f'cur : {player}')
         user = await get_user(player)
         profile = await get_profile(user)
         avatar = profile.avatar.url if profile.avatar.name else ''
@@ -79,7 +62,6 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive_json(self, content, **kwargs):
         player = self.scope['user']
-        logger.info(f"player: {player.username}")
         action = content['action']
         logger.info(f"{player}: {action}")
         if action == 'join':
@@ -118,6 +100,7 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        # if rooms.get(self.room_name): rooms.pop(self.room_name)
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
