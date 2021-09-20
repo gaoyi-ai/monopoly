@@ -23,6 +23,7 @@ class JoinView(View):
         user = request.user
         host_name = kwargs.get('host_name', user.username)
         avatar = Profile.objects.get(user=user).avatar
+        # Determine if a custom avatar has been uploaded
         avatar = avatar.url if avatar.name else ''
 
         return render(request, 'join_view.html', {
