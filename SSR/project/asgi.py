@@ -11,6 +11,8 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 
+from monopoly.consumers.join import QueryAuthMiddleware
+
 django_asgi_app = get_asgi_application()
 
 import monopoly.routing
@@ -18,8 +20,10 @@ import monopoly.routing
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(
-        URLRouter(
-            monopoly.routing.websocket_urlpatterns
+        QueryAuthMiddleware(
+            URLRouter(
+                monopoly.routing.websocket_urlpatterns
+            )
         )
     ),
 })

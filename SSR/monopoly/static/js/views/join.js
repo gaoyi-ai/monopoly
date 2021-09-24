@@ -58,23 +58,17 @@ class JoinView {
     }
 
     initWebSocket() {
-        this.socket = new WebSocket(`ws://${window.location.host}/ws/join/${this.hostName}/`);
+        this.socket = new WebSocket(`ws://${window.location.host}/ws/join/${this.hostName}/?player=${this.userName}`);
 
-        if (this.hostName !== this.userName) {
-            const socket = this.socket;
-            const openMsg = {
-                'action': "join",
-                data: [{
-                    name: this.userName,
-                    avatar: this.avatar
-                }]
-            };
+        const socket = this.socket;
+        const openMsg = {
+            'action': "join"
+        };
 
-            // Connection opened
-            socket.addEventListener('open', function (event) {
-                socket.send(JSON.stringify(openMsg));
-            });
-        }
+        // Connection opened
+        this.socket.addEventListener('open', function (event) {
+            socket.send(JSON.stringify(openMsg));
+        });
 
 
         this.socket.onmessage = (event) => {
