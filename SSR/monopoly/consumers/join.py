@@ -1,53 +1,34 @@
+import logging
+
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from monopoly.consumers.util import rooms, games, change_handlers, get_user, get_profile
+from monopoly.consumers.message import build_join_failed_msg, build_join_reply_msg, build_start_msg
+from monopoly.consumers.room import Room, RoomStatus
+from monopoly.consumers.util import rooms, games, change_handlers, get_user
 from monopoly.core.game import Game
-from monopoly.game_handlers.notice_handler import NoticeHandler
-
-import logging
+from monopoly.handlers.notice_handler import NoticeHandler
 
 logger = logging.getLogger(__name__)
 
 
 async def add_player(room_name, player_name):
     if room_name not in rooms:
-        rooms[room_name] = set()
-        rooms[room_name].add(room_name)
+        new_room = Room(room_name)
+        new_room.host = player_name
+        new_room.join(player_name)
+        rooms[room_name] = new_room
     else:
-        rooms[room_name].add(player_name)
+        rooms[room_name].join(player_name)
 
-    if len(rooms[room_name]) > 4:
+    if rooms[room_name].status == RoomStatus.FULL:
         return False
     return True
 
 
-def build_join_failed_msg():
-    ret = {"action": "fail_join"}
-    return ret
-
-
-async def build_join_reply_msg(room_name):
-    players = rooms[room_name]
-    data = []
-    for player in players:
-        user = await get_user(player)
-        profile = await get_profile(user)
-        avatar = profile.avatar.url if profile.avatar.name else ''
-        data.append({"name": player, "avatar": avatar})
-
-    ret = {"action": "join", "data": data}
-    return ret
-
-
-def build_start_msg():
-    ret = {"action": "start"}
-    return ret
-
-
 async def handle_start(hostname):
     if hostname not in games:
-        players = rooms[hostname]
-        player_num = len(players)
+        room: Room = rooms[hostname]
+        player_num = len(room)
         game = Game(player_num)
         games[hostname] = game
 
@@ -58,6 +39,26 @@ async def handle_start(hostname):
     return build_start_msg()
 
 
+class QueryAuthMiddleware:
+    """
+    Custom middleware (insecure) that takes user IDs from the query string.
+    """
+
+    def __init__(self, app):
+        # Store the ASGI application we were passed
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope['user'].is_anonymous:
+            # Look up user from query string (you should also do things like
+            # checking if it is a valid user ID, or if scope["user"] is already
+            # populated).
+            username = scope["query_string"].decode('utf-8').split("=")[-1]
+            scope['user'] = await get_user(username)
+
+        return await self.app(scope, receive, send)
+
+
 class JoinConsumer(AsyncJsonWebsocketConsumer):
 
     async def receive_json(self, content, **kwargs):
@@ -66,7 +67,7 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
         logger.info(f"{player}: {action}")
         if action == 'join':
             if not await add_player(self.room_name, player.username):
-                msg = build_join_failed_msg()
+                return await self.send_json(build_join_failed_msg())
             else:
                 msg = await build_join_reply_msg(self.room_name)
         else:  # action == 'start':
@@ -100,7 +101,6 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        # if rooms.get(self.room_name): rooms.pop(self.room_name)
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,
