@@ -41,7 +41,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
             players = game.players
             room: Room = rooms[self.game_id]
-            room.status = RoomStatus.GAMING
             players_name = room.players  # get all players in the room
             cash_change = [player.money for player in players]
             pos_change = [player.position for player in players]
