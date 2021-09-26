@@ -113,15 +113,19 @@ def build_join_failed_msg():
     return ret
 
 
-async def build_join_reply_msg(room_name):
-    players = rooms[room_name].players
+async def generate_room_data(players):
     data = []
     for player in players:
         user = await get_user(player)
         profile = await get_profile(user)
         avatar = profile.avatar.url if profile.avatar.name else ''
         data.append({"name": player, "avatar": avatar})
+    return data
 
+
+async def build_join_reply_msg(room_name):
+    players = rooms[room_name].players
+    data = await generate_room_data(players)
     ret = {"action": "join", "data": data}
     return ret
 
