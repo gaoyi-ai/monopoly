@@ -36,7 +36,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
                 return await self.send_json(build_add_err_msg())
             game = games[self.game_id]
             if game.game_state != GameStateType.INITED:
-                return
+                # todo refresh 导致 gamestate 保持WAIT_FOR_ROLL，所以会进入这里
+                return await self.send_json(build_add_err_msg())
             game.game_state = GameStateType.WAIT_FOR_ROLL
 
             players = game.players

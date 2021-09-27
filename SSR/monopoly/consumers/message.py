@@ -8,8 +8,7 @@ async def build_init_msg(players, cash_change, pos_change, wait_decision, decisi
         user = await get_user(player)
         profile = await get_profile(user)
         avatar = profile.avatar.url if profile.avatar.name else ""
-        players_list.append({"fullName": user.username,
-                             "userName": user.username,
+        players_list.append({"userName": user.username,
                              "avatar": avatar})
 
     ret = {"action": "init",
@@ -58,19 +57,20 @@ def build_game_end_msg(curr_player, all_asset):
     return ret
 
 
-def build_buy_land_msg(curr_player, curr_cash, tile_id, next_player):
+def build_buy_land_msg(cur_player, cur_cash, tile_id, next_player):
     ret = {"action": "buy_land",
-           "curr_player": curr_player,
-           "curr_cash": curr_cash,
+           "cur_player": cur_player,
+           "cur_cash": cur_cash,
            "tile_id": tile_id,
            "next_player": next_player,
            }
     return ret
 
 
-def build_construct_msg(curr_cash, tile_id, build_type, next_player):
+def build_construct_msg(cur_player, cur_cash, tile_id, build_type, next_player):
     ret = {"action": "construct",
-           "curr_cash": curr_cash,
+           "cur_player": cur_player,
+           "cur_cash": cur_cash,
            "tile_id": tile_id,
            "build_type": build_type,
            "next_player": next_player,
@@ -108,8 +108,8 @@ def build_ready_msg(ready_state):
     return ret
 
 
-def build_join_failed_msg():
-    ret = {"action": "fail_join"}
+def build_join_failed_msg(status=0):
+    ret = {"action": "fail_join", "data": status}
     return ret
 
 

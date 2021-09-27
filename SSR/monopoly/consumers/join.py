@@ -25,7 +25,7 @@ async def add_player(room_name, player_name):
     return True
 
 
-async def handle_start(hostname):
+def handle_start(hostname):
     if hostname not in games:
         room: Room = rooms[hostname]
         room.status = RoomStatus.GAMING
@@ -67,12 +67,16 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
         action = content['action']
         logger.info(f"{player}: {action}")
         if action == 'join':
-            if not await add_player(self.room_name, player.username):
+            player_name = player.username
+            join_type = content['type']
+            if join_type == 1:
+                player_name = "AI"
+            if not await add_player(self.room_name, player_name):
                 return await self.send_json(build_join_failed_msg())
             else:
                 msg = await build_join_reply_msg(self.room_name)
         elif action == 'start':
-            msg = await handle_start(self.room_name)
+            msg = handle_start(self.room_name)
         else:  # action == 'refresh':
             msg = await build_join_reply_msg(self.room_name)
 
@@ -112,6 +116,15 @@ class JoinConsumer(AsyncJsonWebsocketConsumer):
             room.players.discard(player)
             if room.host == player:
                 rooms.pop(player)
+                msg = build_join_failed_msg(status=1)
+                # Send message to room group
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'game_message',
+                        'msg': msg
+                    }
+                )
         # Leave room group
         await self.channel_layer.group_discard(
             self.room_group_name,

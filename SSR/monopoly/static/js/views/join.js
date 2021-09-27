@@ -1,22 +1,5 @@
 "use strict";
 
-/**
- *WebSocket Interface
- */
-
-/*const receivedMessage = {
-    'action': "join" | "start",
-    data: [{
-        id: "user_id",
-        name: "user_name",
-        avatar: "user_url"
-    }]
-};
-
-const sentMessage = {
-    action: "start"
-};*/
-
 class JoinView {
     constructor() {
         this.userName = document.getElementById("user-name").value;
@@ -38,8 +21,13 @@ class JoinView {
         this.$startGame.addEventListener("click", () => {
             this.startGame();
         });
+        this.$addAI = document.getElementById("add-bots");
 
         if (this.userName === this.hostName) {
+            this.$addAI.classList.remove("hidden")
+            this.$addAI.addEventListener("click", () => {
+                this.addAI();
+            })
             this.$invitationLink = document.getElementById("invitation-url");
             this.$invitationLink.value = `${window.location.host}/monopoly/join/${this.hostName}`;
 
@@ -62,7 +50,8 @@ class JoinView {
 
         const socket = this.socket;
         const openMsg = {
-            'action': "join"
+            action: "join",
+            type: 0
         };
 
         // Connection opened
@@ -77,7 +66,7 @@ class JoinView {
         }
 
         const refreshMsg = {
-            'action': "refresh"
+            action: "refresh"
         };
 
         setInterval(() => {
@@ -88,6 +77,9 @@ class JoinView {
     handleStatusChange(message) {
         if (message.action === "join") {
             this.addFriend(message.data);
+            if (this.userName === this.hostName) {
+                this.canAddAI();
+            }
 
             if (this.friends.size > 0) {
                 if (this.hostName !== this.userName) {
@@ -101,10 +93,14 @@ class JoinView {
             this.navigateToGame();
         } else if (message.action === "fail_join") {
             this.$startGame.disabled = true;
-            this.$startGame.innerText = "Navigating back... Create your own game!";
-            this.$newGameNotice.innerText = "4 Players Max Per Game!";
+            this.$startGame.innerText = "Navigating back... Create your own game";
+            if (message.data === 0) {
+                this.$newGameNotice.innerText = "4 Players Max Per Game!";
+            } else {  // message.data === 1
+                this.$newGameNotice.innerText = "Room Not Exists... Maybe host disbanded this room";
+            }
             this.$newGameNotice.style.color = "#F44336";
-            setTimeout(this.navigateBack, 5000);
+            setTimeout(this.navigateBack, 3000);
         }
     }
 
@@ -124,9 +120,25 @@ class JoinView {
                     <img class="joined-user-avatar" src="${friend.avatar}" title="${friend.name}">
                 </a>
             `;
-            // }
         }
         console.log(this.friends)
+    }
+
+    canAddAI() {
+        if (!this.friends.has("AI") && this.friends.size > 0 && this.friends.size < 4) {
+            this.$addAI.innerText = "Want to add AI bots...";
+            this.$addAI.disabled = false;
+        } else {
+            this.$addAI.disabled = true;
+        }
+    }
+
+    addAI() {
+        const msg = {
+            action: "join",
+            type: 1
+        };
+        this.socket.send(JSON.stringify(msg))
     }
 
     startGame() {
