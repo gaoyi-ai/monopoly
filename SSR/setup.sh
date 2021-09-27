@@ -25,4 +25,5 @@ python3 manage.py makemigrations
 python3 manage.py makemigrations monopoly
 python3 manage.py migrate
 python3 manage.py collectstatic --noinput
+python3 manage.py setupai
 python3 manage.py runserver 0.0.0.0:8000

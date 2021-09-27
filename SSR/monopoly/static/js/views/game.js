@@ -8,6 +8,7 @@ class GameView {
         this.audioManager.play("background");
         this.readyPlayerState = false;
         this.gameInProcess = true;
+        this.ai = undefined;
     }
 
     initComponents() {
@@ -113,6 +114,7 @@ class GameView {
             }, 500)
         }
     }
+
     handleStatusChange(message) {
         const messageHandlers = {
             "init": this.handleInit,
@@ -135,15 +137,6 @@ class GameView {
         this.readyPlayerState = message.isReady;
     }
 
-    onDiceRolled() {
-        const notifyServer = () => {
-            this.socket.send(JSON.stringify({
-                action: "roll"
-            }));
-        };
-        setTimeout(notifyServer, 2000);
-    }
-
     /*
     * Init game status, called after ws.connect
     * players: @see initPlayers
@@ -160,7 +153,6 @@ class GameView {
     /*
     * Display players on the top
     * players: [{
-    *   fullName: string, // username
     *   userName: string, // username
     *   avatar: string // user avatar url
     * }]
@@ -169,8 +161,11 @@ class GameView {
         this.players = players;
         this.currentPlayer = null;
 
+        console.log(players)
+
         for (let i = 0; i < players.length; i++) {
             if (this.userName === players[i].userName) this.myPlayerIndex = i;
+            else if (players[i].userName === "AI") this.ai = new AI("AI", "", "AI", i);
             const avatarTemplate = players[i].avatar ? `<img class="user-avatar" src="${players[i].avatar}">`
                 : `<div class="user-group-name">${players[i].userName.charAt(0)}</div>`;
 
@@ -184,8 +179,7 @@ class GameView {
                     <img class="user-role" src="/static/img/player_${i}.png">
                 </div>`;
         }
-
-
+        console.log(this.ai);
         this.gameLoadingPromise = this.gameController.addPlayer(players.length, initPos);
     }
 
@@ -232,7 +226,11 @@ class GameView {
                     onDiceRolled();
                 }
             }];
-        this.showModal(nextPlayer, title, "", this.diceMessage, button);
+        this.showModal(nextPlayer, title, "", this.diceMessage, button).then(() => {
+            if (this.userName === this.hostName && this.currentPlayer === this.ai.index) {
+                this.onDiceRolled();
+            }
+        })
     }
 
     /*
@@ -315,6 +313,35 @@ class GameView {
         }))
     }
 
+    onDiceRolled() {
+        const notifyServer = () => {
+            this.socket.send(JSON.stringify({
+                action: "roll"
+            }));
+        };
+        setTimeout(notifyServer, 2000);
+    }
+
+    aiPlaying() {
+        if (this.ai.isPossible()) {
+            setTimeout(
+                () => {
+                    this.socket.send(JSON.stringify({
+                        action: "confirm_decision",
+                        hostname: this.hostName,
+                    }));
+                }, 3000)
+        } else {
+            setTimeout(
+                () => {
+                    this.socket.send(JSON.stringify({
+                        action: "cancel_decision",
+                        hostname: this.hostName,
+                    }));
+                }, 3000)
+        }
+    }
+
     async handleInit(message) {
         let players = message.players;
         let changeCash = message.changeCash;
@@ -357,7 +384,11 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
             eventMsg = this.players[nextPlayer].userName + " " + eventMsg;
-            this.showModal(nextPlayer, title, landname, eventMsg, buttons);
+            this.showModal(nextPlayer, title, landname, eventMsg, buttons).then(() => {
+                if (this.userName === this.hostName && this.currentPlayer === this.ai.index) {
+                    this.aiPlaying()
+                }
+            })
         }
     }
 
@@ -402,7 +433,11 @@ class GameView {
                 callback: this.cancelDecision.bind(this)
             }] : [];
 
-            this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, buttons);
+            this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, buttons).then(() => {
+                if (this.userName === this.hostName && this.currentPlayer === this.ai.index) {
+                    this.aiPlaying()
+                }
+            })
         } else {
             if (message.is_cash_change === "true") {
                 await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
@@ -420,26 +455,27 @@ class GameView {
 
     }
 
-    handleBuyLand(message) {
-        const {curr_player, curr_cash, tile_id} = message;
-        this.changeCashAmount(curr_cash);
-        this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, tile_id, curr_player);
-        let next_player = message.next_player;
+    async handleBuyLand(message) {
+        const {cur_player, cur_cash, tile_id, next_player} = message;
+        this.changeCashAmount(cur_cash);
+        this.gameController.addProperty(PropertyManager.PROPERTY_OWNER_MARK, tile_id, cur_player);
+        const msg = "Buy a New Land"
+        await this.showModal(cur_player, "Buy Land", this.players[cur_player].userName, msg, [], 3)
         this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
 
-    handleConstruct(message) {
-        let curr_cash = message.curr_cash;
-        let tile_id = message.tile_id;
-        this.changeCashAmount(curr_cash);
-        if (message.build_type === "house") {
+    async handleConstruct(message) {
+        const {cur_player, cur_cash, tile_id, build_type, next_player} = message
+        this.changeCashAmount(cur_cash);
+        if (build_type === "house") {
             this.gameController.addProperty(PropertyManager.PROPERTY_HOUSE, tile_id);
         } else {
             this.gameController.addProperty(PropertyManager.PROPERTY_HOTEL, tile_id);
         }
-        this.changePlayer(message.next_player, this.onDiceRolled.bind(this));
-
         this.audioManager.play("build");
+        const msg = `Build a new ${build_type}`
+        await this.showModal(cur_player, "New Construction", this.players[cur_player].userName, msg, [], 3)
+        this.changePlayer(next_player, this.onDiceRolled.bind(this));
     }
 
     async handleCancel(message) {
@@ -496,7 +532,7 @@ class GameView {
             action: "cancel_decision",
             hostname: this.hostName,
         }));
-        // await this.hideModal(true);
+        await this.hideModal(true);
     }
 
     /*

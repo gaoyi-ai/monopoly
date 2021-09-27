@@ -13,6 +13,8 @@ def handle_ready(**kwargs):
     if h not in readys:
         readys[h] = set()
     readys[h].add(player)
+    if "AI" in rooms[h].players:
+        readys[h].add("AI")
 
     if len(rooms[h]) == len(readys[h]):
         return True
@@ -99,16 +101,16 @@ async def handle_confirm_decision(**kwargs):
     decision.option = True
     confirm_result: MoveReceipt = game.execute_move_receipt(decision)
     players = game.players
-    curr_cash = [player.money for player in players]
+    cur_cash = [player.money for player in players]
     next_player_idx = game.cur_player.index
 
     if confirm_result.type == MoveReceiptType.BUY_LAND_OPTION:
         tile_id = confirm_result.land.pos
-        msg = build_buy_land_msg(cur_player, curr_cash, tile_id, next_player_idx)
+        msg = build_buy_land_msg(cur_player, cur_cash, tile_id, next_player_idx)
     elif confirm_result.type == MoveReceiptType.CONSTRUCTION_OPTION:
         tile_id = confirm_result.land.pos
         build_type = "house" if confirm_result.land.content.property_type == BuildingType.HOUSE else "hotel"
-        msg = build_construct_msg(curr_cash, tile_id, build_type, next_player_idx)
+        msg = build_construct_msg(cur_player, cur_cash, tile_id, build_type, next_player_idx)
     else:  # MoveReceiptType.NOTHING
         msg = build_cancel_decision_msg(cur_player, next_player_idx, "no enough money")
     return msg

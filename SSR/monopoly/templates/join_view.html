@@ -18,14 +18,18 @@
         </div>
         <div class="card-content-container">
             <a href="{% url 'profile' user.name %}" target="_blank">
-                <img id="user-avatar" src="{{ user.avatar}}">
+                <img id="user-avatar" src="{{ user.avatar }}">
             </a>
             <span id="new-game-notice">New Game!</span>
             <div id="joined-users-container">
                 <a href="{% url 'profile' user.name %}" target="_blank">
-                    <img class="joined-user-avatar" src="{{ user.avatar|default:"../media/default_avatar.png" }}" title="{{ user.name }}">
+                    <img class="joined-user-avatar" src="{{ user.avatar|default:"../media/default_avatar.png" }}"
+                         title="{{ user.name }}">
                 </a>
             </div>
+            <button id="add-bots" class="light-button hidden" disabled>
+                Want to add AI bots...
+            </button>
             <button id="start-game" class="large-button" disabled>
                 Waiting for friends to join...
             </button>
