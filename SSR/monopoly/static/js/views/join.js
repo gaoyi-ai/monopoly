@@ -1,5 +1,6 @@
 "use strict";
 
+
 class JoinView {
     constructor() {
         this.userName = document.getElementById("user-name").value;
@@ -15,6 +16,14 @@ class JoinView {
     }
 
     initComponents() {
+        this.$showLobby = false
+        this.lobbyUpdate = null;
+        this.$enterLobby = document.getElementById("enterLobby")
+        this.$enterLobby.addEventListener("click", () => {
+            this.showLobby();
+        })
+        this.$onlineRoomsContainer = document.getElementById("online-rooms-container")
+        this.$rooms = document.getElementById("rooms")
         this.$usersContainer = document.getElementById("joined-users-container");
         this.$newGameNotice = document.getElementById("new-game-notice");
         this.$startGame = document.getElementById("start-game");
@@ -133,12 +142,73 @@ class JoinView {
         }
     }
 
+    showLobby() {
+        this.$showLobby = !this.$showLobby
+        console.log(this.$showLobby)
+        this.$onlineRoomsContainer.style.visibility = "visible"
+        const msg = {
+            action: "query",
+        };
+        if (this.lobbyUpdate === null) {
+            this.socket2 = new WebSocket(`ws://${window.location.host}/ws/lobby/`);
+            this.socket2.addEventListener("open", () => {
+                this.lobbyUpdate = setInterval(() => this.socket2.send(JSON.stringify(msg)), 2000);
+            })
+            this.socket2.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                this.handleLobbyChange(message);
+            }
+        }
+        if (!this.$showLobby) {
+            this.$onlineRoomsContainer.style.visibility = "hidden"
+            clearInterval(this.lobbyUpdate)
+            this.lobbyUpdate = null
+        }
+    }
+
+    handleLobbyChange(msg) {
+        const {lobby} = msg
+        this.lobby = lobby
+        this.$rooms.innerHTML = '';
+
+        for (let room of lobby) {
+            let host = room.host
+            let players = room.players
+            let status = room.status
+            if (status !== "WAITING" || host === this.userName) {
+                this.$rooms.innerHTML += `
+            <div id="room-${host}">
+                <span>Room Host: </span>
+                <button disabled>${host}</button>
+                <div id="room-${host}-status">State: ${status}</div>
+                <span>Players: </span>
+                <span>${players}</span>
+            </div>
+            `;
+            } else {
+                this.$rooms.innerHTML += `
+            <div id="room-${host}">
+                <span>Room Host: </span>
+                <button class="light-button">${host}</button>
+                <div id="room-${host}-status">State: ${status}</div>
+                <span>Players: </span>
+                <span>${players}</span>
+            </div>
+            `;
+            }
+        }
+        let roomDoor = document.querySelectorAll("[id^='room-'] > button")
+        roomDoor.forEach(btn => btn.addEventListener("click", () => {
+            window.location = `http://${window.location.host}/monopoly/join/${btn.innerHTML}`;
+        }))
+
+    }
+
     addAI() {
         const msg = {
             action: "join",
             type: 1
         };
-        this.socket.send(JSON.stringify(msg))
     }
 
     startGame() {

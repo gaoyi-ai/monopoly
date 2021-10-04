@@ -51,6 +51,20 @@
                     </div>
                 </div>
             {% endif %}
+
+            <button id="enterLobby" class="light-button">
+                Show Game Lobby
+            </button>
+            <div id="online-rooms-container" class="card" style="visibility: hidden">
+                <div class="card-blur-container">
+                    <div class="card-blur"></div>
+                </div>
+                <div class="card-content-container" style="margin-top: 0">
+                    <span style="align-items: center;text-align: center;font-size: 32px;color: #0084ff;">Game Lobby</span>
+                    <div id="rooms">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
