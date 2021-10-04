@@ -209,6 +209,7 @@ class JoinView {
             action: "join",
             type: 1
         };
+        this.socket.send(JSON.stringify(msg))
     }
 
     startGame() {
