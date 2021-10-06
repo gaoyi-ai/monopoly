@@ -29,6 +29,7 @@ class CardDeck:
         shuffle(self.cards)
 
     def draw(self):
+        """Randomly acquired cards"""
         self.cur_index = (self.cur_index + 1) % self.__len__()
         if self.cur_index == 0:
             self.shuffle()

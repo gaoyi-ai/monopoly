@@ -1,9 +1,10 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from monopoly.consumers.util import games, rooms, decisions, build_add_err_msg, build_init_msg, change_handlers, \
-    build_ready_msg
+from monopoly.consumers.room import Room, RoomStatus
+from monopoly.consumers.util import games, rooms, decisions, change_handlers
+from monopoly.consumers.message import build_init_msg, build_add_err_msg, build_ready_msg
 from monopoly.core.move_receipt import ModalTitleType
-from monopoly.game_handlers.game_handler import get_building_type, handle_roll, handle_confirm_decision, \
+from monopoly.handlers.game_handler import get_building_type, handle_roll, handle_confirm_decision, \
     handle_cancel_decision, handle_end_game, handle_chat, handle_ready
 from monopoly.core.game import GameStateType
 import logging
@@ -31,16 +32,17 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             msg = await self.handler_mapping[action](h=self.game_id, gs=games, chs=change_handlers, message=content)
         else:
             if (self.game_id not in games) \
-                    or (self.game_id not in rooms or player.username not in rooms[self.game_id]):
-                msg = await build_add_err_msg()
-                return await self.send_json(msg)
+                    or (self.game_id not in rooms or player.username not in rooms[self.game_id].players):
+                return await self.send_json(build_add_err_msg())
             game = games[self.game_id]
             if game.game_state != GameStateType.INITED:
-                return
+                # todo refresh 导致 gamestate 保持WAIT_FOR_ROLL，所以会进入这里
+                return await self.send_json(build_add_err_msg())
             game.game_state = GameStateType.WAIT_FOR_ROLL
 
             players = game.players
-            profiles = rooms[self.game_id]  # get all players in the room
+            room: Room = rooms[self.game_id]
+            players_name = room.players  # get all players in the room
             cash_change = [player.money for player in players]
             pos_change = [player.position for player in players]
             landname = None
@@ -65,9 +67,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
             for i in range(len(owners)):
                 houses.append(get_building_type(i, game))
 
-            msg = await build_init_msg(profiles, cash_change, pos_change, wait_decision, decision, next_player_ind,
+            msg = await build_init_msg(players_name, cash_change, pos_change, wait_decision, decision, next_player_ind,
                                        title, landname, owners, houses)
-            # await self.send_json(msg)
+
         # Send message to room group
         await self.channel_layer.group_send(
             self.game_id_group,

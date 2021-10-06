@@ -150,3 +150,12 @@ hr {
 #init-profile:hover {
     background-color: #FF7043 !important;
 }
+
+#online-rooms-container {
+  width: 332px;
+  padding: 8px 10px 10px;
+  display: flex;
+  position: absolute;
+  left: 105%;
+  top: 0;
+}

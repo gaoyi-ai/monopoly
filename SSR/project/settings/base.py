@@ -149,6 +149,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# default login url
 LOGIN_URL = '/monopoly/login/'
 
 SPECTACULAR_SETTINGS = {

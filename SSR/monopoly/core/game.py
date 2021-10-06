@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class GameStateType:
+    """Control the game process"""
     WAIT_FOR_ROLL = 0
     WAIT_FOR_DECISION = 1
     GAME_ENDED = 2
@@ -21,6 +22,7 @@ class GameStateType:
 
 
 class Game:
+    # Game unique ID 
     game_id = 0
 
     def __init__(self, player_num):
@@ -29,7 +31,6 @@ class Game:
             self.notify_error("Error: Incorrect player number, should be 1-4 players.")
             return
         self.players = [Player(i) for i in range(player_num)]
-        self.game_state = GameStateType.INITED
         self._card_deck = CardDeck()
         self._board = Board()
         self._dice = Dice()
@@ -38,6 +39,8 @@ class Game:
         self._handlers = []
         self.add_game_change_listener(DebugLogHandler(self))
         self._update_game_id()
+        # Game in Inited, waiting for external change i.e. all players ready -> set WAIT_FOR_ROLL
+        self.game_state = GameStateType.INITED
         self.notify_new_game()
 
     def _update_game_id(self):
@@ -59,7 +62,7 @@ class Game:
 
     def _change_player_on(self, cur):
         new_user_index = (cur + 1) % (len(self.players))
-        logger.info(f"new_user_index: {new_user_index}")
+        logger.info(f"[Game {self.game_id}] new_user_index: {new_user_index}")
         new_user = self.players[new_user_index]
         if new_user.remaining_stop > 0:  # the next player is in stopping
             new_user.deduct_stop(1)
@@ -76,7 +79,7 @@ class Game:
                 self._handlers.remove(handler)
                 return True
         else:
-            logger.info(f"Error: {to_be_deleted} not in game handlers.")
+            logger.info(f"[Game {self.game_id}] Error: {to_be_deleted} not in game handlers.")
             return False
 
     def _move(self, steps: int) -> Optional[Land]:
@@ -117,9 +120,10 @@ class Game:
                 val = card.money_deduction
             else:
                 result_type = MoveReceiptType.REWARD
+                # get abs money 
                 val = -1 * card.money_deduction
             self._move_receipt = MoveReceipt(result_type, val, land)
-            self._move_receipt.msg = "Chance Card: " + str(card)
+            self._move_receipt.msg = " Chance Card: " + str(card)
         elif land_type == LandType.START:
             self._move_receipt = MoveReceipt(MoveReceiptType.REWARD, START_REWARD, land)
         return self._move_receipt
@@ -226,8 +230,10 @@ class Game:
         move_result = self._generate_move_receipt(land_dest)
         return steps, move_result
 
-    # this will return a 40 num array, each indicate the owner of each land
     def get_land_owners(self):
+        """
+        return a 40 num array, each indicate the owner of each land
+        """
         ret = []
         for i in range(len(self._board)):
             land = self._board.land_at(i)
