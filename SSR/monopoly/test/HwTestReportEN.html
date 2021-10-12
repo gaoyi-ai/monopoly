@@ -311,8 +311,8 @@ a.popup_link:hover {
         </h1>
         <div style="float:left;width:50%;">
             <p class='parameters'> <p class='attribute'><strong>Tester:</strong> Yi, Haoyu</p>
-<p class='attribute'><strong>Start Time:</strong> 2021-10-12 16:08:01</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.004998</p>
+<p class='attribute'><strong>Start Time:</strong> 2021-10-12 21:52:45</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.008976</p>
 <p class='attribute'><strong>Status:</strong> All 14  Pass 12 Failed 1 Error 1  Passing Rate:85.7%</p>
 </p>
             <br>
@@ -376,8 +376,8 @@ a.popup_link:hover {
         
 pt1_1: DebugLogHandler [Info] [Game ID: 0] [Msg: Game Started]
 DebugLogHandler [Info] [Game ID: 0] [Msg: current player 0 is rolling]
-DebugLogHandler [Info] [Game ID: 0] [Msg: Decision Move Receipt [type: Now should make a payment.. value: 200, land: Chance, option: None, msg:  Chance Card: Overspeed ] is made]
-DebugLogHandler [Info] [Game ID: 0] [Msg: Player Player index: 0's move result Move Receipt [type: Now should make a payment.. value: 200, land: Chance, option: None, msg:  Chance Card: Overspeed ] applied]
+DebugLogHandler [Info] [Game ID: 0] [Msg: Decision Move Receipt [type: Now reward a fortune.. value: 150, land: Chance, option: None, msg:  Chance Card: Meet harry potter in Doherty Hall] is made]
+DebugLogHandler [Info] [Game ID: 0] [Msg: Player Player index: 0's move result Move Receipt [type: Now reward a fortune.. value: 150, land: Chance, option: None, msg:  Chance Card: Meet harry potter in Doherty Hall] applied]
 DebugLogHandler [Info] [Game ID: 0] [Msg: Player changed to : 1]
 
 
@@ -765,7 +765,7 @@ DebugLogHandler [Error] [Game ID: 17] [Msg: Error: No enough money to construct 
 DebugLogHandler [Info] [Game ID: 17] [Msg: Player changed to : 0]
 DebugLogHandler [Error] [Game ID: 17] [Msg: Internal error: the game state must be 'waiting for roll' when you roll]
 Traceback (most recent call last):
-  File "F:/Education/Software Engineering Capstone Project/monopoly/SSR/monopoly/test/tests.py", line 297, in test_no_enough_money_to_construct_building
+  File "F:/Education/Software Engineering Capstone Project/monopoly/SSR/monopoly/test/tests.py", line 303, in test_no_enough_money_to_construct_building
     self.assertEqual(self.game.execute_move_receipt(move_receipt).type, MoveReceiptType.NOTHING)
 AttributeError: 'NoneType' object has no attribute 'type'
 
@@ -833,7 +833,7 @@ DebugLogHandler [Info] [Game ID: 20] [Msg: Game Ended]
 DebugLogHandler [Info] [Msg: The player 1 has go bankruptcy]
 DebugLogHandler [Info] [Game ID: 20] [Msg: Player changed to : 0]
 Traceback (most recent call last):
-  File "F:/Education/Software Engineering Capstone Project/monopoly/SSR/monopoly/test/tests.py", line 332, in test_game_end
+  File "F:/Education/Software Engineering Capstone Project/monopoly/SSR/monopoly/test/tests.py", line 338, in test_game_end
     self.assertEqual(self.game.game_state, GameStateType.GAME_ENDED)
 AssertionError: -1 != 2
 
