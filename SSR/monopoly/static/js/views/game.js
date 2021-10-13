@@ -9,7 +9,7 @@ class GameView {
         this.readyPlayerState = false;
         this.gameInProcess = true;
         this.ai = undefined;
-        this.timeForHumanToDecide = 3;  // defult = 3: after 3 seconds, activate auto
+        this.timeForHumanToDecide = 10;  // default = 10: after 10 seconds, activate auto
         this.rollDiceByHuman = false;
         this.makeDecisionByHuman = false;
     }
@@ -233,7 +233,7 @@ class GameView {
             }];
 
         setTimeout(() =>{
-            if (this.currentPlayer != this.ai.index){
+            if (this.currentPlayer !== this.ai.index){
                 if (!this.rollDiceByHuman){
                     this.onDiceRolled()
                 }
@@ -442,9 +442,9 @@ class GameView {
 
         setTimeout(
             () => {
-                if (this.currentPlayer != this.ai.index){
+                if (this.currentPlayer !== this.ai.index){
                     let random0To10 = Math.floor(Math.random() * 10);
-                    if (random0To10 % 2 == 0){
+                    if (random0To10 % 2 === 0){
                         this.socket.send(JSON.stringify({
                             action: "confirm_decision",
                             hostname: this.hostName,
