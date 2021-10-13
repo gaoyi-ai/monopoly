@@ -199,6 +199,8 @@ class Game:
             return self._move_receipt
         else:  # cannot affordable
             logger.info(f'decision {decision} cannot affordable')
+            if self.game_state == GameStateType.GAME_ENDED:
+                return decision
             self._change_player()
             self._to_next_game_state()
             return MoveReceipt(MoveReceiptType.NOTHING, 0, decision.land)

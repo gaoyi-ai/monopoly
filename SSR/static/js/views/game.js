@@ -9,7 +9,7 @@ class GameView {
         this.readyPlayerState = false;
         this.gameInProcess = true;
         this.ai = undefined;
-        this.timeForHumanToDecide = 3;  // defult = 3: after 3 seconds, activate auto
+        this.timeForHumanToDecide = 10;  // default = 10: after 10 seconds, activate auto
         this.rollDiceByHuman = false;
         this.makeDecisionByHuman = false;
     }
@@ -220,25 +220,25 @@ class GameView {
             [{
                 text: "Roll",
                 callback: () => {
-        document.getElementById("roll").checked = true;
-        document.querySelector("#modal-buttons-container button").disabled = true;
-        document.querySelector("#modal-buttons-container button").innerText = "Hold on...";
+                    document.getElementById("roll").checked = true;
+                    document.querySelector("#modal-buttons-container button").disabled = true;
+                    document.querySelector("#modal-buttons-container button").innerText = "Hold on...";
 
-        this.rollDiceByHuman = true;
+                    this.rollDiceByHuman = true;
 
-        this.audioManager.play("dice");
+                    this.audioManager.play("dice");
 
-        this.onDiceRolled();
-    }
+                    this.onDiceRolled();
+                }
             }];
 
-        setTimeout(() =>{
-            if (this.currentPlayer != this.ai.index){
-                if (!this.rollDiceByHuman){
+        setTimeout(() => {
+            if (this.currentPlayer != this.ai.index) {
+                if (!this.rollDiceByHuman) {
                     this.onDiceRolled()
                 }
             }
-        }, this.timeForHumanToDecide*1000);
+        }, this.timeForHumanToDecide * 1000);
 
         this.showModal(nextPlayer, title, "", this.diceMessage, button).then(() => {
             if (this.userName === this.hostName && this.currentPlayer === this.ai.index) {
@@ -442,23 +442,23 @@ class GameView {
 
         setTimeout(
             () => {
-                if (this.currentPlayer != this.ai.index){
+                if (this.currentPlayer != this.ai.index) {
                     let random0To10 = Math.floor(Math.random() * 10);
-                    if (random0To10 % 2 == 0){
+                    if (random0To10 % 2 == 0) {
                         this.socket.send(JSON.stringify({
                             action: "confirm_decision",
                             hostname: this.hostName,
                         }));
-                    }else{
+                    } else {
                         this.socket.send(JSON.stringify({
                             action: "cancel_decision",
                             hostname: this.hostName,
                         }));
                     }
                 }
-                },
-            this.timeForHumanToDecide*1000
-            );
+            },
+            this.timeForHumanToDecide * 1000
+        );
 
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{

@@ -299,7 +299,6 @@ class GameTestCase(unittest.TestCase):
         self.assertEqual(move_receipt.type, MoveReceiptType.CONSTRUCTION_OPTION)
         player.money = 70
         move_receipt.option = True
-        self.game.execute_move_receipt(move_receipt)
         self.assertEqual(self.game.execute_move_receipt(move_receipt).type, MoveReceiptType.NOTHING)
 
     def test_arrive_second_time_to_infrastructure(self):
