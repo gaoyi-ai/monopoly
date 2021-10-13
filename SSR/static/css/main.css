@@ -1,0 +1,196 @@
+html, body {
+    width: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 15px;
+    color: #1a1a1a;
+    -webkit-tap-highlight-color: rgba(26, 26, 26, 0);
+    background: #c1daf4 url("../img/background.jpg") no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#page-container {
+    flex-direction: column;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+a {
+    text-decoration: none;
+    display: flex;
+}
+
+/* Components - Card */
+.card {
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
+    box-sizing: border-box;
+    opacity: 0.90;
+    display: flex;
+    animation: fadein 0.8s;
+    transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.large-button {
+    color: #fff;
+    background-color: #0084ff;
+    font-size: 15px;
+    height: 32px;
+    border: none;
+    border-radius: 3px;
+    padding: 0 14px;
+    outline-width: 0;
+    cursor: pointer;
+}
+
+.large-button:hover {
+    border-color: #0077e6 !important;
+    background-color: #0077e6 !important;
+}
+
+.large-button:disabled {
+    border-color: #8590a6 !important;
+    background-color: #8590a6 !important;
+}
+
+.light-button {
+    color: #0084ff;
+    background-color: #fff;
+    font-size: 15px;
+    height: 32px;
+    border: 1px solid #0084ff;
+    border-radius: 3px;
+    padding: 0 14px;
+    outline-width: 0;
+    cursor: pointer;
+}
+
+.light-button:hover {
+    background-color: rgba(0, 132, 255, .06) !important;
+}
+
+.light-button:disabled {
+    opacity: .5;
+}
+
+/* Components - Banner */
+#navgation {
+    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    margin: 0 auto;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+}
+
+#nav-container {
+    width: 724px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-active {
+    color: #444 !important;
+    font-weight: 500;
+}
+
+.nav-button:hover {
+    color: #175199 !important;
+    fill: #175199 !important;
+}
+
+.nav-button {
+    padding: 0 15px;
+    font-size: 15px;
+    line-height: 30px;
+    color: #8590a6;
+    fill: #8590a6;
+    cursor: pointer;
+    display: flex;
+}
+
+#nav-profile {
+    height: 32px;
+    width: 32px;
+}
+
+.nav-button-group {
+    display: flex;
+    align-items: center;
+}
+
+/*#nav-profile:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 32px;*/
+/*    width: 32px;*/
+/*    background-size: 32px 32px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
+
+.card-content-container {
+    z-index: 100;
+    width: 100%;
+}
+
+.card-blur {
+    filter: blur(40px);
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    bottom: -20px;
+    left: -20px;
+    z-index: 99;
+    margin: 0;
+    padding: 20px;
+    background: #fff no-repeat;
+}
+
+.card-blur-container {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 5px;
+    z-index: 99;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.90;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+.modal-hidden {
+    opacity: 0;
+}
