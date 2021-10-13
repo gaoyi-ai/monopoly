@@ -27,7 +27,7 @@ class Game:
 
     def __init__(self, player_num):
         # assert 0 < player_num <= 4
-        if player_num <= 0 or player_num > 4:
+        if player_num <= 0 or player_num > 8:
             self.notify_error("Error: Incorrect player number, should be 1-4 players.")
             return
         self.players = [Player(i) for i in range(player_num)]

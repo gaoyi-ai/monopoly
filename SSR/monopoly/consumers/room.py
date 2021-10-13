@@ -26,7 +26,7 @@ class Room:
             self.players.add(player)
 
     def _check(self):
-        if self.__len__() >= 4:
+        if self.__len__() >= 8:
             self.status = RoomStatus.FULL
             return False
         return True
