@@ -1,9 +1,16 @@
 from monopoly.core.game import Game, GameStateType
 from monopoly.core.land import Chance, Infrastructure, Constructable, START_REWARD, BuildingType, Land
 from monopoly.core.move_receipt import MoveReceiptType, MoveReceipt
+from HwTestReport import HTMLTestReportEN
 import unittest
 
 from monopoly.core.player import INIT_PLAYER_MONEY, Player
+
+"""
+A test with HTML Report
+
+Note: Run in CLI. If run in Pycharm, set "Run/Debug Configurations", use "Python" not "Python test".
+"""
 
 
 class GameTestCase(unittest.TestCase):
@@ -331,5 +338,26 @@ class GameTestCase(unittest.TestCase):
         self.assertEqual(self.game.game_state, GameStateType.GAME_ENDED)
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == "__main__":
+    suite = unittest.TestSuite()
+    suite.addTest(GameTestCase('test_chance_land'))
+    suite.addTest(GameTestCase('test_infrastructure_buy_and_payment'))
+    suite.addTest(GameTestCase('test_first_player_not_buy_second_buy'))
+    suite.addTest(GameTestCase('test_two_rounds_buy_payment'))
+    suite.addTest(GameTestCase('test_to_jail_stop_one_round'))
+    suite.addTest(GameTestCase('test_construct_house'))
+    suite.addTest(GameTestCase('test_another_player_payment_in_construction_land'))
+    suite.addTest(GameTestCase('test_parking'))
+    suite.addTest(GameTestCase('test_bypass_on_start'))
+    suite.addTest(GameTestCase('test_hotel'))
+    suite.addTest(GameTestCase('test_no_enough_money_to_buy'))
+    suite.addTest(GameTestCase('test_no_enough_money_to_construct_building'))
+    suite.addTest(GameTestCase('test_arrive_second_time_to_infrastructure'))
+    suite.addTest(GameTestCase('test_game_end'))
+    with open('./HwTestReportEN.html', 'wb') as report:
+        runner = HTMLTestReportEN(stream=report,
+                                  verbosity=2,
+                                  title='Default test',
+                                  description='description_placeholder',
+                                  tester='Yi, Haoyu')
+        runner.run(suite)

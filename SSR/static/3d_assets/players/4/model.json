@@ -25569,8 +25569,8 @@
                     "transparent": false,
                     "colorAmbient": [
                         1,
-                        0.89,
-                        0.709
+                        0.478,
+                        0
                     ],
                     "blending": "NormalBlending",
                     "DbgIndex": 0,
@@ -25579,8 +25579,8 @@
                     "wireframe": false,
                     "colorDiffuse": [
                         1,
-                        0.89,
-                        0.709
+                        0.478,
+                        0
                     ],
                     "opacity": 1,
                     "colorSpecular": [
@@ -38802,7 +38802,7 @@
                 ],
                 "visible": true,
                 "type": "Mesh",
-                "material": "B92F5ACA-E24A-3A69-B2DD-69B8C9C5682C",
+                "material": "4385125B-DD1E-3025-880F-3311517CC8D5",
                 "castShadow": true,
                 "receiveShadow": true,
                 "geometry": "65010417-33DE-3CC1-8750-CBCD89AB3E27"
@@ -38830,7 +38830,7 @@
                 ],
                 "visible": true,
                 "type": "Mesh",
-                "material": "4385125B-DD1E-3025-880F-3311517CC8D5",
+                "material": "B92F5ACA-E24A-3A69-B2DD-69B8C9C5682C",
                 "castShadow": true,
                 "receiveShadow": true,
                 "geometry": "751EA59A-2CA3-314C-B9BF-D2212DCD0A58"
@@ -38899,16 +38899,16 @@
         {
 
             "depthTest": true,
-            "color": 16770229,
+            "color": 16742912,
             "specular": 0,
             "emissive": 0,
             "shininess": 50,
             "type": "MeshPhongMaterial",
             "vertexColors": false,
             "blending": "NormalBlending",
-            "name": "FFE4B5",
+            "name": "0",
             "uuid": "4385125B-DD1E-3025-880F-3311517CC8D5",
-            "ambient": 16770229,
+            "ambient": 16742912,
             "depthWrite": true
         },
         {
@@ -38928,16 +38928,16 @@
         },
         {
             "depthTest": true,
-            "color": 16753920,
+            "color": 11579568,
             "specular": 0,
             "emissive": 0,
             "shininess": 50,
             "type": "MeshPhongMaterial",
             "vertexColors": false,
             "blending": "NormalBlending",
-            "name": "FFA500",
+            "name": "b0b0b0",
             "uuid": "B92F5ACA-E24A-3A69-B2DD-69B8C9C5682C",
-            "ambient": 16753920,
+            "ambient": 11579568,
             "side": 2,
             "depthWrite": true
         },
