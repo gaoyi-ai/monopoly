@@ -311,9 +311,9 @@ a.popup_link:hover {
         </h1>
         <div style="float:left;width:50%;">
             <p class='parameters'> <p class='attribute'><strong>Tester:</strong> Yi, Haoyu</p>
-<p class='attribute'><strong>Start Time:</strong> 2021-10-12 21:52:45</p>
-<p class='attribute'><strong>Duration:</strong> 0:00:00.008976</p>
-<p class='attribute'><strong>Status:</strong> All 14  Pass 12 Failed 1 Error 1  Passing Rate:85.7%</p>
+<p class='attribute'><strong>Start Time:</strong> 2021-10-13 21:14:29</p>
+<p class='attribute'><strong>Duration:</strong> 0:00:00.003000</p>
+<p class='attribute'><strong>Status:</strong> All 14  Pass 14  Passing Rate:100.0%</p>
 </p>
             <br>
             <br>
@@ -350,12 +350,12 @@ a.popup_link:hover {
     <td>View</td>
 </tr>
 
-<tr class='errorClass'>
+<tr class='passClass'>
     <td>GameTestCase</td>
     <td>14</td>
-    <td>12</td>
-    <td>1</td>
-    <td>1</td>
+    <td>14</td>
+    <td>0</td>
+    <td>0</td>
     <td><a href="javascript:showClassDetail('c1',14)">Details</a></td>
 </tr>
 
@@ -376,8 +376,8 @@ a.popup_link:hover {
         
 pt1_1: DebugLogHandler [Info] [Game ID: 0] [Msg: Game Started]
 DebugLogHandler [Info] [Game ID: 0] [Msg: current player 0 is rolling]
-DebugLogHandler [Info] [Game ID: 0] [Msg: Decision Move Receipt [type: Now reward a fortune.. value: 150, land: Chance, option: None, msg:  Chance Card: Meet harry potter in Doherty Hall] is made]
-DebugLogHandler [Info] [Game ID: 0] [Msg: Player Player index: 0's move result Move Receipt [type: Now reward a fortune.. value: 150, land: Chance, option: None, msg:  Chance Card: Meet harry potter in Doherty Hall] applied]
+DebugLogHandler [Info] [Game ID: 0] [Msg: Decision Move Receipt [type: Now should make a payment.. value: 100, land: Chance, option: None, msg:  Chance Card: Get One More Grace day] is made]
+DebugLogHandler [Info] [Game ID: 0] [Msg: Player Player index: 0's move result Move Receipt [type: Now should make a payment.. value: 100, land: Chance, option: None, msg:  Chance Card: Get One More Grace day] applied]
 DebugLogHandler [Info] [Game ID: 0] [Msg: Player changed to : 1]
 
 
@@ -738,22 +738,22 @@ DebugLogHandler [Info] [Game ID: 15] [Msg: Player changed to : 0]
     </td>
 </tr>
 
-<tr id='et1_12' class='none'>
-    <td class='errorCase'><div class='testcase'>test_no_enough_money_to_construct_building</div></td>
+<tr id='pt1_12' class='hiddenRow'>
+    <td class='passCase'><div class='testcase'>test_no_enough_money_to_construct_building</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_et1_12')" >
-        error</a>
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt1_12')" >
+        pass</a>
 
-    <div id='div_et1_12' class="popup_window">
+    <div id='div_pt1_12' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_et1_12').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt1_12').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-et1_12: DebugLogHandler [Info] [Game ID: 16] [Msg: Game Started]
+pt1_12: DebugLogHandler [Info] [Game ID: 16] [Msg: Game Started]
 DebugLogHandler [Info] [Game ID: 17] [Msg: Game Started]
 DebugLogHandler [Info] [Game ID: 17] [Msg: current player 0 is rolling]
 DebugLogHandler [Info] [Game ID: 17] [Msg: Decision Move Receipt [type: Now choosing to buy or not.. value: 60, land: UC, option: True, msg: None] is made]
@@ -763,11 +763,6 @@ DebugLogHandler [Info] [Game ID: 17] [Msg:  Player 0 just passed the start point
 DebugLogHandler [Info] [Game ID: 17] [Msg: Decision Move Receipt [type: Now choosing to build a new building or not.. value: 100, land: UC, option: True, msg: None] is made]
 DebugLogHandler [Error] [Game ID: 17] [Msg: Error: No enough money to construct new property.]
 DebugLogHandler [Info] [Game ID: 17] [Msg: Player changed to : 0]
-DebugLogHandler [Error] [Game ID: 17] [Msg: Internal error: the game state must be 'waiting for roll' when you roll]
-Traceback (most recent call last):
-  File "F:/Education/Software Engineering Capstone Project/monopoly/SSR/monopoly/test/tests.py", line 303, in test_no_enough_money_to_construct_building
-    self.assertEqual(self.game.execute_move_receipt(move_receipt).type, MoveReceiptType.NOTHING)
-AttributeError: 'NoneType' object has no attribute 'type'
 
 
         </pre>
@@ -808,22 +803,22 @@ DebugLogHandler [Info] [Game ID: 19] [Msg:  Player 0 just passed the start point
     </td>
 </tr>
 
-<tr id='ft1_14' class='none'>
-    <td class='failCase'><div class='testcase'>test_game_end</div></td>
+<tr id='pt1_14' class='hiddenRow'>
+    <td class='passCase'><div class='testcase'>test_game_end</div></td>
     <td colspan='5' align='center'>
 
     <!--css div popup start-->
-    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_ft1_14')" >
-        fail</a>
+    <a class="popup_link" onfocus='this.blur();' href="javascript:showTestDetail('div_pt1_14')" >
+        pass</a>
 
-    <div id='div_ft1_14' class="popup_window">
+    <div id='div_pt1_14' class="popup_window">
         <div style='text-align: right; color:red;cursor:pointer'>
-        <a onfocus='this.blur();' onclick="document.getElementById('div_ft1_14').style.display = 'none' " >
+        <a onfocus='this.blur();' onclick="document.getElementById('div_pt1_14').style.display = 'none' " >
            [x]</a>
         </div>
         <pre>
         
-ft1_14: DebugLogHandler [Info] [Game ID: 20] [Msg: Game Started]
+pt1_14: DebugLogHandler [Info] [Game ID: 20] [Msg: Game Started]
 DebugLogHandler [Info] [Game ID: 20] [Msg: current player 0 is rolling]
 DebugLogHandler [Info] [Game ID: 20] [Msg: Decision Move Receipt [type: Now choosing to buy or not.. value: 60, land: UC, option: True, msg: None] is made]
 DebugLogHandler [Info] [Game ID: 20] [Msg: Player changed to : 1]
@@ -831,11 +826,6 @@ DebugLogHandler [Info] [Game ID: 20] [Msg: current player 1 is rolling]
 DebugLogHandler [Info] [Game ID: 20] [Msg: Decision Move Receipt [type: Now should make a payment.. value: 12.0, land: UC, option: None, msg: None] is made]
 DebugLogHandler [Info] [Game ID: 20] [Msg: Game Ended]
 DebugLogHandler [Info] [Msg: The player 1 has go bankruptcy]
-DebugLogHandler [Info] [Game ID: 20] [Msg: Player changed to : 0]
-Traceback (most recent call last):
-  File "F:/Education/Software Engineering Capstone Project/monopoly/SSR/monopoly/test/tests.py", line 338, in test_game_end
-    self.assertEqual(self.game.game_state, GameStateType.GAME_ENDED)
-AssertionError: -1 != 2
 
 
         </pre>
@@ -848,10 +838,10 @@ AssertionError: -1 != 2
 <tr id='total_row'>
     <td>Total</td>
     <td>14</td>
-    <td>12</td>
-    <td>1</td>
-    <td>1</td>
-    <td>Passing rate：85.7%</td>
+    <td>14</td>
+    <td>0</td>
+    <td>0</td>
+    <td>Passing rate：100.0%</td>
 
 </tr>
 </table>
@@ -894,9 +884,9 @@ AssertionError: -1 != 2
                             radius : '60%',
                             center: ['50%', '60%'],
                             data:[
-                                {value:12, name:'pass'},
-                                {value:1, name:'fail'},
-                                {value:1, name:'error'}
+                                {value:14, name:'pass'},
+                                {value:0, name:'fail'},
+                                {value:0, name:'error'}
                             ],
                             itemStyle: {
                                 emphasis: {
