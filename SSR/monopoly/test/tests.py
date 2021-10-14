@@ -356,7 +356,7 @@ if __name__ == "__main__":
     with open('./HwTestReportEN.html', 'wb') as report:
         runner = HTMLTestReportEN(stream=report,
                                   verbosity=2,
-                                  title='Default test',
-                                  description='description_placeholder',
+                                  title='Core functions test',
+                                  description='Tested all core functions.',
                                   tester='Yi, Haoyu')
         runner.run(suite)
