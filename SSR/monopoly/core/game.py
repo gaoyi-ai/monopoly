@@ -27,7 +27,7 @@ class Game:
 
     def __init__(self, player_num):
         # assert 0 < player_num <= 4
-        if player_num <= 0 or player_num > 4:
+        if player_num <= 0 or player_num > 8:
             self.notify_error("Error: Incorrect player number, should be 1-4 players.")
             return
         self.players = [Player(i) for i in range(player_num)]
@@ -199,6 +199,8 @@ class Game:
             return self._move_receipt
         else:  # cannot affordable
             logger.info(f'decision {decision} cannot affordable')
+            if self.game_state == GameStateType.GAME_ENDED:
+                return decision
             self._change_player()
             self._to_next_game_state()
             return MoveReceipt(MoveReceiptType.NOTHING, 0, decision.land)

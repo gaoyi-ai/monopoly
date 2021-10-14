@@ -1,0 +1,485 @@
+#page-container {
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: 0;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#users-container {
+    top: 0;
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    margin: 40px;
+    right: 0;
+}
+
+.user-group {
+    position: relative;
+    margin-left: 30px;
+    border-radius: 100px;
+    opacity: 0.85;
+    display: flex;
+    box-shadow: 0 0 20px #fff;
+    z-index: 100;
+}
+
+.user-group.active {
+    box-shadow: 0 0 0 4px #BF360C;
+}
+
+.user-cash {
+    line-height: 48px;
+    font-size: 30px;
+    font-family: monospace;
+    margin: 0 10px 0 6px;
+    color: #795548;
+    display: flex;
+}
+
+.user-avatar {
+    border-radius: 24px;
+    overflow: hidden;
+    width: 38px;
+    height: 38px;
+    vertical-align: middle;
+    position: relative;
+    padding: 5px;
+}
+
+/*.user-avatar:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 38px;*/
+/*    width: 38px;*/
+/*    background-size: 38px 38px;*/
+/*    border-radius: 24px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
+
+.user-role {
+    overflow: hidden;
+    width: 48px;
+    height: 48px;
+    vertical-align: middle;
+    top: 16px;
+    left: -20px;
+    position: absolute;
+    border-radius: 28px;
+}
+
+.user-group-name {
+    margin: 5px;
+    background: #fff;
+    width: 38px;
+    height: 38px;
+    border-radius: 24px;
+    line-height: 38px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+}
+
+.center-card {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#modal-card {
+    width: 432px;
+    height: 70%;
+    height: fit-content;
+    overflow: initial;
+}
+
+#modal-message-container {
+    font-size: 18px;
+    padding: 0 20px;
+}
+
+#modal-card .card-content-container {
+    display: flex;
+    flex-direction: column;
+    padding: 100px 20px 20px 20px;
+    position: relative;
+    height: min-content;
+}
+
+#modal-user-avatar {
+    top: -72px;
+    left: 144px;
+    background: #ccc;
+    border-radius: 68px;
+    overflow: hidden;
+    border: 4px solid #fff;
+    width: 128px;
+    height: 128px;
+    vertical-align: middle;
+    position: absolute;
+}
+
+/*#modal-user-avatar:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 128px;*/
+/*    width: 128px;*/
+/*    background-size: 128px 128px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
+
+#modal-user-avatar.active {
+    box-shadow: 0 0 40px #5db0fd;
+}
+
+#modal-buttons-container {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#modal-buttons-container button {
+    margin: 0 10px;
+}
+
+.monopoly-cash {
+    text-decoration: line-through;
+    font-family: monospace;
+}
+
+/* Chat */
+#chat-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    bottom: 0;
+    flex-direction: column;
+    margin: 40px;
+}
+
+.chat-message {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    opacity: 0.8;
+    border-radius: 23px;
+    max-width: 320px;
+    width: fit-content;
+    margin-top: 10px;
+    min-height: 38px;
+}
+
+.chat-message-avatar {
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
+    position: relative;
+    overflow: hidden;
+}
+
+/*.chat-message-avatar:before {*/
+/*    content: ' ';*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    height: 36px;*/
+/*    width: 36px;*/
+/*    background-size: 36px 36px;*/
+/*    background-image: url("../img/default_avatar.png");*/
+/*}*/
+
+.chat-message-content {
+    color: #000000;
+    font-size: 16px;
+    margin: 8px 10px;
+    overflow-wrap: break-word;
+    line-height: 20px;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+#chat-message-input {
+    background: none;
+    border: none;
+    color: #fff;
+    outline: none;
+    margin: 8px 10px;
+    line-height: 20px;
+    overflow: hidden;
+    font-size: 16px;
+    flex-grow: 1;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+#chat-send-container {
+    width: 320px;
+    z-index: 100;
+}
+
+#chat-messages {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#chat-messages .chat-message {
+    background: #eeeeee;
+    animation: fade-and-move 10s forwards;
+}
+
+#chat-send-container.chat-message {
+    background: #424242;
+}
+
+@keyframes fade-and-move {
+    0% {
+        opacity: 0;
+        transform: translateY(5rem);
+    }
+
+    10% {
+        opacity: 0.8;
+        transform: translateY(0);
+    }
+
+    85% {
+        opacity: 0.8;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-5rem);
+        visibility: hidden;
+        overflow: hidden;
+    }
+}
+
+#modal-title {
+    align-items: center;
+    text-align: center;
+    font-size: 32px;
+    color: #0084ff;
+}
+
+#modal-subtitle {
+    align-items: center;
+    text-align: center;
+    font-size: 20px;
+    color: #FF9800;
+    margin: 4px 0 36px;
+}
+
+.scoreboard-row {
+    display: flex;
+    line-height: 36px;
+    margin: 20px 0;
+    font-size: 24px;
+}
+
+.scoreboard-ranking {
+    font-family: impact, serif;
+    width: 40px;
+    font-style: italic;
+}
+
+.scoreboard-username {
+    margin-left: 20px;
+    width: 180px;
+    font-size: 18px;
+}
+
+.scoreboard-score {
+    font-family: monospace;
+}
+
+.scoreboard-row:nth-child(1) {
+    color: #F44336;
+    animation: fadein 1s;
+}
+
+.scoreboard-row:nth-child(2) {
+    color: #FF9800;
+    animation: fadein 2s;
+}
+
+.scoreboard-row:nth-child(3) {
+    color: #2196F3;
+    animation: fadein 3s;
+}
+
+.scoreboard-row:nth-child(4) {
+    color: #009688;
+    animation: fadein 4s;
+}
+
+.scoreboard-bg {
+    background: url("../img/scoreboard_bg.png") no-repeat;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#controls-container {
+    top: 0;
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    margin: 40px;
+    left: 0;
+    z-index: 100;
+}
+
+#controls-container svg {
+    border-radius: 29px;
+    background: #eeeeee;
+    width: 30px;
+    height: 30px;
+    padding: 9px;
+    opacity: 0.8;
+    margin-right: 20px;
+}
+
+#controls-container a.control-off svg {
+    background: #424242;
+    fill: #9E9E9E;
+}
+
+#controls-container a {
+    cursor: pointer;
+}
+
+#rules-overlay {
+    background: #000000;
+    opacity: 0.8;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99;
+}
+
+.rule-indicator-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    white-space: pre;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+#rule-indicator-audio {
+    left: 40px;
+    top: 105px;
+}
+
+#rule-indicator-help {
+    left: 125px;
+    top: 98px;
+}
+
+#rule-indicator-exit {
+    left: 250px;
+    top: 50px;
+}
+
+#rule-indicator-player {
+    right: 60px;
+    top: 100px;
+    align-items: flex-end;
+}
+
+#rule-indicator-chat {
+    left: 40px;
+    bottom: 100px;
+}
+
+#rule-indicator-start {
+    right: 160px;
+    bottom: 150px;
+    align-items: flex-end;
+}
+
+.rule-sub {
+    font-size: 20px;
+    color: #999;
+}
+
+#rules-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    color: #ffffff;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 280px;
+    align-items: center;
+    justify-content: center;
+}
+
+.rule-container {
+    font-size: 16px;
+    background: #4e4e4e47;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin: 0 20px;
+}
+
+.rule-container ul li {
+    line-height: 24px;
+}
+
+.rule-container ul {
+    line-height: 0;
+    padding-left: 20px;
+    margin: 5px 0;
+}
+
+.rule-container ul li img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin: 0 4px;
+}
+
+.rule-container ul li span {
+    vertical-align: middle;
+}
+
+.rule-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #FF9800;
+}
+
+#construction-rule-container {
+    min-width: 300px;
+}

@@ -9,6 +9,9 @@ class GameView {
         this.readyPlayerState = false;
         this.gameInProcess = true;
         this.ai = undefined;
+        // this.timeForHumanToDecide = 10;  // default = 10: after 10 seconds, activate auto
+        // this.rollDiceByHuman = false;
+        // this.makeDecisionByHuman = false;
     }
 
     initComponents() {
@@ -217,20 +220,33 @@ class GameView {
             [{
                 text: "Roll",
                 callback: () => {
-                    document.getElementById("roll").checked = true;
-                    document.querySelector("#modal-buttons-container button").disabled = true;
-                    document.querySelector("#modal-buttons-container button").innerText = "Hold on...";
+        document.getElementById("roll").checked = true;
+        document.querySelector("#modal-buttons-container button").disabled = true;
+        document.querySelector("#modal-buttons-container button").innerText = "Hold on...";
 
-                    this.audioManager.play("dice");
+        // this.rollDiceByHuman = true;
 
-                    onDiceRolled();
-                }
+        this.audioManager.play("dice");
+
+        this.onDiceRolled();
+    }
             }];
+
+        // setTimeout(() =>{
+        //     if (this.currentPlayer !== this.ai.index){
+        //         if (!this.rollDiceByHuman){
+        //             this.onDiceRolled()
+        //         }
+        //     }
+        // }, this.timeForHumanToDecide*1000);
+
         this.showModal(nextPlayer, title, "", this.diceMessage, button).then(() => {
             if (this.userName === this.hostName && this.currentPlayer === this.ai.index) {
                 this.onDiceRolled();
             }
         })
+
+        // this.rollDiceByHuman = false;
     }
 
     /*
@@ -424,6 +440,26 @@ class GameView {
             await this.showModal(currPlayer, "Get Reward", "Start point", eventMsg, [], 2);
         }
 
+        // setTimeout(
+        //     () => {
+        //         if (this.currentPlayer !== this.ai.index){
+        //             let random0To10 = Math.floor(Math.random() * 10);
+        //             if (random0To10 % 2 === 0){
+        //                 this.socket.send(JSON.stringify({
+        //                     action: "confirm_decision",
+        //                     hostname: this.hostName,
+        //                 }));
+        //             }else{
+        //                 this.socket.send(JSON.stringify({
+        //                     action: "cancel_decision",
+        //                     hostname: this.hostName,
+        //                 }));
+        //             }
+        //         }
+        //         },
+        //     this.timeForHumanToDecide*1000
+        //     );
+
         if (message.is_option === "true") {
             const buttons = (this.myPlayerIndex === currPlayer) ? [{
                 text: "Buy",
@@ -438,6 +474,9 @@ class GameView {
                     this.aiPlaying()
                 }
             })
+
+            // this.makeDecisionByHuman = true;
+
         } else {
             if (message.is_cash_change === "true") {
                 await this.showModal(currPlayer, title, landname, this.players[currPlayer].userName + eventMsg, [], 3);
@@ -452,6 +491,8 @@ class GameView {
                 this.changePlayer(nextPlayer, this.onDiceRolled.bind(this));
             }
         }
+
+        // this.makeDecisionByHuman = false;
 
     }
 
