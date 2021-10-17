@@ -17,6 +17,6 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-uwsgi --ini /home/pi/monopoly/SSR/uwsgi.ini &
+uwsgi --ini /home/admin/monopoly/SSR/uwsgi.ini &
 
 exit 0
