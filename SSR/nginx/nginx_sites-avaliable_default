@@ -9,7 +9,7 @@ server {
 	listen 80;
 	# listen [::]:80 default_server;
 
-	server_name 127.0.0.1;
+	server_name  3.18.221.239;
     access_log   off;
     error_log    /home/admin/monopoly/SSR/logs/nginx_error.log;
 
@@ -18,7 +18,7 @@ server {
 		# as directory, then fall back to displaying a 404.
 		try_files $uri $uri/ =404;
 		include /etc/nginx/uwsgi_params;
-		uwsgi_pass 127.0.0.1:8070;
+		uwsgi_pass project;
         uwsgi_param UWSGI_PYHOME /home/admin/monopoly/SSR/venv;
         uwsgi_param UWSGI_CHDIR /home/admin/monopoly/SSR;
         uwsgi_param UWSGI_SCRIPT project.wsgi:application;
