@@ -2,7 +2,7 @@ from .base import *
 
 DEBUG = False
 ADMINS = (
-    ('Yi Gao', '577981827@qq.com'),
+    ('Yi Gao', 'admin@qq.com'),
 )
 
 DATABASES = {
@@ -13,4 +13,4 @@ DATABASES = {
 }
 
 # Production mode specific
-ALLOWED_HOSTS = ['39.105.184.237', '3.18.221.239', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1']
